@@ -548,13 +548,41 @@ public class Main
              System.out.print("Error Token: "+testToken.toString()+"\nIs not of type: "+input+"\n Program will not parse.");
          }
     }
+    public void match(String input)
+    {
+        Token testToken=tokens.get(tokenCounter);
+        if (testToken.getLexum().equals(input))
+        {
+            tokenCounter++;
+        }
+        else
+        {
+            System.out.print("Error Token: "+testToken.toString()+"\nIs not of type: "+input+"\n Program will not parse.");
+        }
+    }
+    public void match(Collection<String> inputs)
+    {
+        Token testToken=tokens.get(tokenCounter);
+        Boolean match=false;
+        for (String inputStringType: inputs) {
+            if (testToken.getLexum().equals(inputStringType)) {
+                match=true;
+                tokenCounter++;
+            }
+        }
+        if (!match)
+        {
+            System.out.print("Error Token: "+testToken.toString()+"\nIs not of the accepted calling types.\n Program will not parse.");
+            System.exit(-1);
+        }
+    }
     public void matchType(Collection<String> inputs)
     {
         Token testToken=tokens.get(tokenCounter);
         Boolean match=false;
         for (String inputStringType: inputs) {
             if (testToken.getType().equals(inputStringType)) {
-                match=true
+                match=true;
                 tokenCounter++;
             }
         }
