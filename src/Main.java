@@ -536,47 +536,77 @@ public class Main
         while (testToken.getType().equals("error"));
         return (testToken);
     }
-    public void matchType(String input)
+    public boolean matchType(String input)
     {
          Token testToken=tokens.get(tokenCounter);
          if (testToken.getType().equals(input))
          {
              tokenCounter++;
+             return true;
          }
-        else
-         {
-             System.out.print("Error Token: "+testToken.toString()+"\nIs not of type: "+input+"\n Program will not parse.");
-         }
+        return false;
+
     }
-    public void match(String input)
+    public boolean lookType(String input)
+    {
+        Token testToken=tokens.get(tokenCounter);
+        if (testToken.getType().equals(input))
+        {
+            //tokenCounter++;
+            return true;
+        }
+        return false;
+
+    }
+    public boolean match(String input)
     {
         Token testToken=tokens.get(tokenCounter);
         if (testToken.getLexum().equals(input))
         {
             tokenCounter++;
+            return true;
         }
-        else
-        {
-            System.out.print("Error Token: "+testToken.toString()+"\nIs not of type: "+input+"\n Program will not parse.");
-        }
+        return false;
+
     }
-    public void match(Collection<String> inputs)
+
+    public boolean look(String input)
+    {
+        Token testToken=tokens.get(tokenCounter);
+        if (testToken.getLexum().equals(input))
+        {
+            //tokenCounter++;
+            return true;
+        }
+        return false;
+
+    }
+    public boolean match(Collection<String> inputs)
     {
         Token testToken=tokens.get(tokenCounter);
         Boolean match=false;
         for (String inputStringType: inputs) {
             if (testToken.getLexum().equals(inputStringType)) {
-                match=true;
                 tokenCounter++;
+                return true;
             }
         }
-        if (!match)
-        {
-            System.out.print("Error Token: "+testToken.toString()+"\nIs not of the accepted calling types.\n Program will not parse.");
-            System.exit(-1);
-        }
+        return false;
     }
-    public void matchType(Collection<String> inputs)
+    public boolean look(Collection<String> inputs)
+    {
+        Token testToken=tokens.get(tokenCounter);
+        Boolean match=false;
+        for (String inputStringType: inputs) {
+            if (testToken.getLexum().equals(inputStringType)) {
+                //tokenCounter++;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean matchType(Collection<String> inputs)
     {
         Token testToken=tokens.get(tokenCounter);
         Boolean match=false;
@@ -584,42 +614,81 @@ public class Main
             if (testToken.getType().equals(inputStringType)) {
                 match=true;
                 tokenCounter++;
+                return true;
             }
         }
-        if (!match)
-        {
-            System.out.print("Error Token: "+testToken.toString()+"\nIs not of the accepted calling types.\n Program will not parse.");
-            System.exit(-1);
+        return false;
+
+    }
+    public boolean lookType(Collection<String> inputs)
+    {
+        Token testToken=tokens.get(tokenCounter);
+        Boolean match=false;
+        for (String inputStringType: inputs) {
+            if (testToken.getType().equals(inputStringType)) {
+                match=true;
+                //tokenCounter++;
+                return true;
+            }
         }
+        return false;
+
+    }
+    public void error(String expected)
+    {
+        System.out.println("Error "+expected+" expected. \n Have:\"" +
+                tokens.get(tokenCounter).getLexum()+
+                "\"\n Of type: "+tokens.get(tokenCounter).getLexum());
+        System.exit(-1);
     }
 
     public void program() //S
     {
-        declaration_list();
+        type_specifier();//E
+        if (matchType("id")){}//a
+        else
+        {
+            error("Type id");
+        }
+        stemmed_decleration();//C
+        declaration_list();//A
+
     }
     public void declaration_list() //A
     {
-        Token nextToken=getToken();
 
-    }
-    public void declaration_list_prime() //A'
-    {
-        if ()//test for
-            declaration();
-        declaration_list_prime();
-        else
-        //@
+
     }
     public void declaration()  //B
     {
 
     }
-    public void var_declaration()  //C
-    {}
+    public void stemmed_decleration()  //C
+    {
+        if (match(";"))  //4
+        {stemmed_vardecleration();}
+        else if (match("["))
+        {stemmed_vardecleration();}
+
+    }
+    public void stemmed_vardecleration()
+    {
+
+    }
     public void fun_declaration()  //D
     {}
     public void  type_specifier() //E
-    {}
+    {
+        if (match("int"))
+        {
+            return;
+        }
+        else if (match("void"))
+        {return;}
+        else if(match("float"))
+        {return;}
+        //Todo add error message
+    }
     public void parameters()  //F
     {}
     public void compound_statement() //G
