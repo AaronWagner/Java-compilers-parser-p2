@@ -641,11 +641,12 @@ public class Main
                 "\"\n Of type: "+tokens.get(tokenCounter).getLexum());
         System.exit(-1);
     }
-
+// This starts the recusive decent methods
+    /////////////////////////////////////////////////////////////////////////////////
     public void program() //S
     {
         type_specifier();//E
-        if (matchType("id")){}//a
+        if (look("id")){}//a
         else
         {
             error("Type id");
@@ -654,92 +655,251 @@ public class Main
         declaration_list();//A
 
     }
-    public void declaration_list() //A
+    public void declaration_list() //A->BA | @
     {
+        //check for first of B
+        if (look("int")||look("void")||look("float"))//First of B {d b n}
+        {
+            declaration();
+            declaration_list();
+        }
+        else return;
+    }
 
+    public void declaration()  //B->EaC
+    {
+        type_specifier();//E
+        if (look("id")){}//a
+        else
+        {
+            error("Type id");
+        }
+        stemmed_decleration();//C
 
     }
-    public void declaration()  //B
+
+    public void stemmed_decleration()  //C->4 |(F)G
     {
+        if (look(";")||look("["))
+        {
+            stemmed_vardecleration();//4
+        }
+        else if(match("("))//(F)G
+        {
+            parameters();//F
+            if (match(")"))
+            {
+                compound_statement();
+            }
+            else {error(")");}
+        }
+        else {error("(");}
 
     }
-    public void stemmed_decleration()  //C
+    public void stemmed_vardecleration() //4 -> ; | [c]
     {
-        if (match(";"))  //4
-        {stemmed_vardecleration();}
-        else if (match("["))
-        {stemmed_vardecleration();}
-
-    }
-    public void stemmed_vardecleration()
-    {
-
-    }
-    public void fun_declaration()  //D
-    {}
-    public void  type_specifier() //E
-    {
-        if (match("int"))
+        if (match(";"))
         {
             return;
         }
-        else if (match("void"))
-        {return;}
-        else if(match("float"))
-        {return;}
-        //Todo add error message
+        else if (match("["))
+        {
+            matchType("num");
+            if (match("]"))
+            {
+                return;
+            }
+            else
+            {
+                error("]");
+            }
+        }
+        else
+        {
+            error("[");
+        }
+
+    }
+    public void fun_declaration()  //D->a50 | @
+    {
+        if (matchType("id"))//a
+        {
+            parameter_list_prime();
+        }
+        else
+        {
+            //check follows of D
+            if (look(")"))
+            {
+                return;
+            }
+            else
+            {
+                error (")");
+            }
+        }
+    }
+    public void  type_specifier() //E
+    {
+        if (match("int"))//d
+        {
+            return;
+        }
+        else if (match("void"))//b
+            {return;}
+        else if(match("float"))//n
+            {return;}
+        else {error("Type Specifier");}
+
     }
     public void parameters()  //F
     {}
     public void compound_statement() //G
-    {}
+    {
+        if (match("{"))
+        {
+            local_declaration();
+            statement_list();
+            if (match("}"))
+            {return;}
+            else
+            {
+                error("}");
+            }
+        }
+        else
+        {
+            error("}");
+        }
+    }
     public void parameter_list() //H
     {}
+    public void parameter_list_prime() //5
+    {
+        if (match("["))
+        {
+            if (match("]"))
+            {
+                //check follows of 5
+                if (look(","))
+                {
+                    return;
+                }
+                else
+                {
+                    error ("}");
+                }
+
+            }
+        }
+        else
+        {
+            //check follows of 5
+        }
+    }
     public void parameter() //I
     {}
     public void local_declaration() //J
+    {
+        if (look(";")||look("(")||look("["))
+        {
+            stemmed_decleration();;
+            local_declaration();
+        }
+        else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//followsb of J)
+        {
+            return;
+        }
+        else
+        {
+            error ("statment ");
+        }
+    }
+    public void statement_list() //K->LK
+    {
+        //check first of statment
+        if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
+        {
+            statement();
+            statement_list();
+        }
+        else if (look("}"))//check follows of K
+        {
+            error("}");
+        }
+    }
+    public void statement()  //L-> M | G | N | O | P
+    {
+        if (lookType("num")||lookType("id")||look(";")||look("(") )//first of M
+        {
+            expressions_statement();
+        }
+        else if (look("{"))//first of G:compound_statement
+        {
+            compound_statement();;
+        }
+        else if (look("if"))//first of N:selection_statment
+        {
+            selection_statement();
+        }
+        else if(look("while")) //first of O:iteration_statment
+        {
+            statement();
+        }
+        else if(look("return")) //first og P :return_statement
+        {
+            return_statement();
+        }
+        else{error ("statment ");}
+
+    }
+    public void expressions_statement()  //M->Q; | ;
     {}
-    public void statement_list() //K
+    public void selection_statement() //N-> e(Q)L6
     {}
-    public void statement()  //L
+    public void local_declarations_prime()//6 -> fL | @
     {}
-    public void expressions_statement()  //M
+    public void iteration_statement() //O-> g(Q)L
     {}
-    public void selection_statement() //N
+    public void return_statement()  //P-> h7
     {}
-    public void iteration_statement() //O
+    public void stemmed_return_statement() //7->;|Q;
     {}
-    public void return_statement()  //P
+    public void expression() //Q-> R=Q | T
     {}
-    public void expression() //Q
+    public void variable() //R-> a8
     {}
-    public void variable() //R
+    public void stemmed_variable() //8->[Q]|@
     {}
-    public void simple_expression() //T
-        {}
-    public void additive_expression() //U
+    public void simple_expression() //T-> U9
     {}
-    public void relop() //V
+    public void stemmed_expression() //9->VU |@
     {}
-    public void addop() //W
+    public void additive_expression() //U-> Xu
     {}
-    public void term() //X
+    public void additive_expression_prime() //u->WXu |@
     {}
-    public void term_prime() //X'
+    public void relop() //V -> <x | >x | == | !=
     {}
-    public void mulop() //Y
+    public void addop() //W-> + | -
     {}
-    public void factor() //Z
+    public void term() //X-> Zy
     {}
-    public void call() //1
+    public void term_prime() //y-> YZy | @
+    {}
+    public void mulop() //Y-> * | /
+    {}
+    public void factor() //Z -> (Q) | R | 1 | c
+    {}
+    public void call() //1-> a(2)
     {}
     public void call_prime() //1'
     {}
-    public void args() //2
+    public void args() //2 -> 3 | @
     {}
-    public void args_list() //3
+    public void args_list() //3-> Qv
     {}
-    public void args_list_prime() //3'
+    public void args_list_prime() //v-> ,Qv | @
     {}
 
 

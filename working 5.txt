@@ -1,14 +1,18 @@
 S -> BA
-i.e. EaCA
-A -> BA | @
-B -> EaC
-C -> 4 | (F)G  **renamed**
-4 -> ; | [c]
-/E -> d | b | n
+i.e. EaCA *Done
+A -> BA | @	*Started
+** May need a long follows list
+** probably not followed by $
+B -> EaC   *Done *removed by S->EaCA
+C -> 4 | (F)G  *Done *renamed**
+4 -> ; | [c] *Done
+E -> d | b | n *Done
 F -> ED
 D -> a50 | @  **renamed**
+//to do follows D
 0 -> ,I0|@
 5 -> []|@
+//check follows 5
 G -> {JK}
 J -> CJ | @
 K -> LK | @
@@ -44,7 +48,7 @@ Firsts:
 S = [d, b, n]
 A = [d, @, b, n]
 B = [d, b, n]
-C = [;, (, []
+C = [;, ()(, []
 4 = [;, []
 E = [d, b, n]
 F = [d, b, n]
