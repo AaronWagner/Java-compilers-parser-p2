@@ -643,10 +643,10 @@ public class Main
     }
 // This starts the recusive decent methods
     /////////////////////////////////////////////////////////////////////////////////
-    public void program() //S
+    public void program() //S->EaCA
     {
         type_specifier();//E
-        if (look("id")){}//a
+        if (matchType("id")){}//a
         else
         {
             error("Type id");
@@ -669,7 +669,7 @@ public class Main
     public void declaration()  //B->EaC
     {
         type_specifier();//E
-        if (look("id")){}//a
+        if (matchType("id")){}//a
         else
         {
             error("Type id");
