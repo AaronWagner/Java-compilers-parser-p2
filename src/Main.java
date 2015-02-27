@@ -854,33 +854,168 @@ public class Main
 
     }
     public void expressions_statement()  //M->Q; | ;
-    {}
+    {
+        if (lookType("num")||lookType("id")||look("("))
+        {
+            expression();
+        }
+        else if (match(";"))
+        {return;}
+        else {error("expression statment");}
+    }
     public void selection_statement() //N-> e(Q)L6
-    {}
+    {
+        if (match("if"))//e
+        {
+            if (match("("))
+            {
+                expression();
+                if (match(")"))
+                {
+                    statement();
+                    local_declarations_prime();
+                }
+                else{error(")");}
+            }
+            else{error("(");}
+        }
+    }
     public void local_declarations_prime()//6 -> fL | @
-    {}
+    {
+        if (match("else"))
+        {
+            if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//check first of statement
+            {
+                statement();
+            }
+            else{error("statement");}
+        }
+        else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
+        {
+         return;//check follows of 6
+        }
+        else {error("local declaration");}
+    }
     public void iteration_statement() //O-> g(Q)L
-    {}
+    {
+        if (match("while"))
+        {
+            //(Q)L
+            if (match("("))
+            {
+                expression();
+                if (match(")"))
+                {
+                    statement();
+                }
+                else {error(")");}
+            }
+            else
+            {error("(");}
+        }
+        else
+        {error("while ");}
+    }
     public void return_statement()  //P-> h7
-    {}
+    {
+        if (match("return"))//h
+        {
+            stemmed_return_statement();
+        }
+        else
+        {error("return");}
+    }
     public void stemmed_return_statement() //7->;|Q;
-    {}
+    {
+        if (match(";"))
+        {return;}
+        else  if (lookType("num")||lookType("id")||look("("))//todo check for first of Q
+        {
+            expression();
+            if (match(";"))
+            {return;}
+            else {error("; ");}
+        }
+        else {error("; ");}
+    }
     public void expression() //Q-> R=Q | T
-    {}
+    {
+        if (lookType("id"))
+        {
+            variable();
+            if (match("="))
+            {expression();}
+            else {error("=");}
+        }
+        else if (lookType("num")||lookType("id")||look("("))
+        {simple_expression();}
+        else{error("expression ");}
+
+    }
     public void variable() //R-> a8
-    {}
+    {
+        if (match("id"))
+        {stemmed_variable();}
+        else{error("id");}
+    }
     public void stemmed_variable() //8->[Q]|@
-    {}
+    {
+        if (match("["))
+        {
+            expression();
+            if (match("]"))
+            {return;}
+            else {error("]");}
+        }
+        else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(","))//check follows of 8
+        {return;}
+        else {error("[");}
+    }
     public void simple_expression() //T-> U9
-    {}
+    {
+        additive_expression();
+        stemmed_expression();
+    }
     public void stemmed_expression() //9->VU |@
-    {}
+    {
+        if (look("!")||look(">")||look("=")||look("<"))
+        {
+            relop();
+            additive_expression();
+        }
+        else if(look("]")||look(";")||look(")")||look(","))//follows of 9
+        {return;}
+        else{error("stemmed expression");}
+
+    }
     public void additive_expression() //U-> Xu
-    {}
+    {
+        term();
+        additive_expression_prime();
+    }
     public void additive_expression_prime() //u->WXu |@
-    {}
+    {
+        if (look("+")||look("-"))
+        {
+            addop();
+            term();
+            additive_expression_prime();
+        }
+        else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(","))//follows of u
+        {}
+        else {error("right hand of additive expression or end of expression");}
+    }
     public void relop() //V -> <x | >x | == | !=
-    {}
+    {
+        if (match("<")||match(">"))
+        {
+
+        }
+        else if(match("==")||match("!="))
+        {return;}
+        else
+        {error("relative operation ");}
+    }
     public void addop() //W-> + | -
     {}
     public void term() //X-> Zy
