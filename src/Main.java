@@ -650,6 +650,7 @@ public class Main
     /////////////////////////////////////////////////////////////////////////////////
     public void program() //S->EaCA
     {
+        System.out.println("program\n");
         type_specifier();//E
         if (matchType("id")){}//a
         else
@@ -667,6 +668,7 @@ public class Main
     }
     public void declaration_list() //A->BA | @
     {
+        System.out.println("declaration list\n");
         //check for first of B
         if (look("int")||look("void")||look("float"))//First of B {d b n}
         {
@@ -683,6 +685,7 @@ public class Main
 
     public void declaration()  //B->EaC
     {
+        System.out.println("declaration\n");
         type_specifier();//E
         if (matchType("id")){}//a
         else
@@ -695,6 +698,7 @@ public class Main
 
     public void stemmed_decleration()  //C->4 |(F)G
     {
+        System.out.println("stemmed declaration\n");
         if (look(";")||look("["))
         {
             stemmed_vardecleration();//4
@@ -713,6 +717,7 @@ public class Main
     }
     public void stemmed_vardecleration() //4 -> ; | [c]
     {
+        System.out.println("stemmed var declaration\n");
         if (match(";"))
         {
             return;
@@ -737,6 +742,7 @@ public class Main
     }
     public void fun_declaration()  //D->a50 | @
     {
+        System.out.println("function declaration\n");
         if (matchType("id"))//a
         {
             parameter_list_prime();//5
@@ -757,6 +763,7 @@ public class Main
     }
     public void declaration_prime() //0 -> ,I0|@
     {
+        System.out.println("decleartion prime\n");
         if(match(","))
         {
             parameter();   //I
@@ -768,6 +775,7 @@ public class Main
     }
     public void  type_specifier() //E-> d | b | n
     {
+        System.out.println("type specifier\n");
         if (match("int"))//d
         {
             return;
@@ -781,11 +789,13 @@ public class Main
     }
     public void parameters()  //F-> ED
     {
+        System.out.println("parameter\n");
         type_specifier();
         fun_declaration();
     }
     public void compound_statement() //G-> {JK}
     {
+        System.out.println("compound statement\n");
         if (match("{"))
         {
             local_declaration();
@@ -803,9 +813,12 @@ public class Main
         }
     }
     public void parameter_list() //H
-    {}
+    {
+        System.out.println("parameter list\n this method is empty and will need to be populated\n");
+    }
     public void parameter_list_prime() //5
     {
+        System.out.println("parameter list prime\n");
         if (match("["))
         {
             if (match("]"))
@@ -822,13 +835,11 @@ public class Main
 
             }
         }
-        else
-        {
-            //check follows of 5
-        }
+        else {error("}");}
     }
     public void parameter() //I-> Ea5
     {
+        System.out.println("parameter\n");
         type_specifier();
         if (matchType("id"))//a
         {//5
@@ -838,6 +849,7 @@ public class Main
     }
     public void local_declaration() //J
     {
+        System.out.println("local declaration\n");
         if (look(";")||look("(")||look("["))
         {
             stemmed_decleration();;
@@ -854,6 +866,7 @@ public class Main
     }
     public void statement_list() //K->LK
     {
+        System.out.println("statment list\n");
         //check first of statment
         if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
         {
@@ -867,6 +880,7 @@ public class Main
     }
     public void statement()  //L-> M | G | N | O | P
     {
+        System.out.println("statement\n");
         if (lookType("num")||lookType("id")||look(";")||look("(") )//first of M
         {
             expressions_statement();
@@ -892,6 +906,7 @@ public class Main
     }
     public void expressions_statement()  //M->Q; | ;
     {
+        System.out.println("expression statement\n");
         if (lookType("num")||lookType("id")||look("("))
         {
             expression();
@@ -902,6 +917,7 @@ public class Main
     }
     public void selection_statement() //N-> e(Q)L6
     {
+        System.out.println("selection statement\n");
         if (match("if"))//e
         {
             if (match("("))
@@ -919,6 +935,7 @@ public class Main
     }
     public void local_declarations_prime()//6 -> fL | @
     {
+        System.out.println("local declaration prime\n");
         if (match("else"))
         {
             if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//check first of statement
@@ -935,6 +952,7 @@ public class Main
     }
     public void iteration_statement() //O-> g(Q)L
     {
+        System.out.println("iteration statement\n");
         if (match("while"))
         {
             //(Q)L
@@ -955,6 +973,7 @@ public class Main
     }
     public void return_statement()  //P-> h7
     {
+        System.out.println("return statment\n");
         if (match("return"))//h
         {
             stemmed_return_statement();
@@ -964,6 +983,7 @@ public class Main
     }
     public void stemmed_return_statement() //7->;|Q;
     {
+        System.out.println("stemmed return statment\n");
         if (match(";"))
         {return;}
         else  if (lookType("num")||lookType("id")||look("("))//todo check for first of Q
@@ -977,6 +997,7 @@ public class Main
     }
     public void expression() //Q-> R=Q | T
     {
+        System.out.println("expression\n");
         if (lookType("id"))
         {
             variable();
@@ -991,12 +1012,14 @@ public class Main
     }
     public void variable() //R-> a8
     {
+        System.out.println("variable\n");
         if (match("id"))
         {stemmed_variable();}
         else{error("id");}
     }
     public void stemmed_variable() //8->[Q]|@
     {
+        System.out.println("stemmed variable\n");
         if (match("["))
         {
             expression();
@@ -1010,11 +1033,13 @@ public class Main
     }
     public void simple_expression() //T-> U9
     {
+        System.out.println("simple expression\n");
         additive_expression();
         stemmed_expression();
     }
     public void stemmed_expression() //9->VU |@
     {
+        System.out.println("stemmed expression\n");
         if (look("!")||look(">")||look("=")||look("<"))
         {
             relop();
@@ -1027,11 +1052,13 @@ public class Main
     }
     public void additive_expression() //U-> Xu
     {
+        System.out.println("additive expression\n");
         term();
         additive_expression_prime();
     }
     public void additive_expression_prime() //u->WXu |@
     {
+        System.out.println("additive expression prime\n");
         if (look("+")||look("-"))
         {
             addop();
@@ -1044,6 +1071,7 @@ public class Main
     }
     public void relop() //V -> <x | >x | == | !=
     {
+        System.out.println("relop\n");
         if (match("<")||match(">"))
         {
 
@@ -1055,6 +1083,7 @@ public class Main
     }
     public void addop() //W-> + | -
     {
+        System.out.println("additive operation\n");
         if (match("+"))
         {return;}
         else if (match("-"))
@@ -1063,11 +1092,13 @@ public class Main
     }
     public void term() //X-> Zy
     {
+        System.out.println("term\n");
         factor();
         term_prime();
     }
     public void term_prime() //y-> YZy | @
     {
+        System.out.println("term prime\n");
         if (lookType("num)")||lookType("id")||look("("))
         {
             mulop();
@@ -1083,6 +1114,7 @@ public class Main
     }
     public void mulop() //Y-> * | /
     {
+        System.out.println("multiplication operation\n");
         if (match ("*"))
         {
             return;
@@ -1104,6 +1136,7 @@ public class Main
 
                         */
     {
+        System.out.println("factor\n");
         if (match("("))
         {
             expression();
@@ -1124,6 +1157,7 @@ public class Main
     }
     public void variable_call_discriminator() //new -> 8 |(2)
     {
+        System.out.println("variable or call discriminator\n");
         if (match("(")) {
             args();
             if (match(")"))
@@ -1139,6 +1173,7 @@ public class Main
     }
     public void call() //1-> a(2)
     {
+        System.out.println("call\n");
         if (matchType("id "))
         {
             if (match("("))
@@ -1153,9 +1188,12 @@ public class Main
         else {error("id ");}
     }
     public void call_prime() //1'
-    {}
+    {
+        System.out.println("call prime\n This method is empty and will require population\n");
+    }
     public void args() //2 -> 3 | @
     {
+        System.out.println("arguments\n");
       if (lookType("num")||lookType("id")||look("("))
       {expression();}
         else if (look(")"))//follows of 2
@@ -1164,11 +1202,13 @@ public class Main
     }
     public void args_list() //3-> Qv
     {
+        System.out.println("arguments list\n");
         expression();
         args_list_prime();
     }
     public void args_list_prime() //v-> ,Qv | @
     {
+        System.out.println("arguments list prime\n");
         if (match(","))
         {
          expression();
