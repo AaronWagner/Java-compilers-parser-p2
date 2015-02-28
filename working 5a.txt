@@ -1,0 +1,36 @@
+S - Program									a - ID
+A - declaration-list	
+B - declaration								c - num
+C - stemmed declarartion							b - void
+4 - stemmed-var-declaration					d - int
+D - stemmed params decleration							e - if
+E - type-specifier							f - else
+F - params									g - while
+G - compound-stmt							h - return 
+H - param-list								n - float
+5 - param-list-prime
+I - param
+J - local-declarations
+6 - local-declarations-prime
+K - statement-list
+L - statement
+M - expression-stmt
+N - selection-stmt
+O - iteration-stmt
+P - return-stmt
+Q - expression 
+R - var
+T - simple-expression
+U - additive-expression
+u - additive-expression-prime
+V - relop
+W - addop
+X - term
+y - term-prime
+Y - mulop
+Z - factor
+1 - call
+x - call prime
+2 - args
+3 - arg-list
+v - arg-list-prime

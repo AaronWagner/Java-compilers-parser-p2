@@ -114,6 +114,9 @@ public class Main
 
         }
         myMain.tokenCounter=0;
+        /*Token endToken=new Token("$")
+        myMain.tokens.add();
+        */
     }
 
     public void makePatterns()
@@ -294,6 +297,8 @@ public class Main
         }
         //System.out.print("Remaining length: "+remainingInputString.length()+"\n"+remainingInputString);
 
+        Token endToken=new Token("$");
+        tokens.add(endToken);
     }
 
 
@@ -653,6 +658,11 @@ public class Main
         }
         stemmed_decleration();//C
         declaration_list();//A
+        if (match("$"))
+        {
+            System.out.println("Accepted");
+            System.exit(0);
+        }
 
     }
     public void declaration_list() //A->BA | @
@@ -662,6 +672,11 @@ public class Main
         {
             declaration();
             declaration_list();
+        }
+        if (match("$"))
+        {
+            System.out.println("Accepted");
+            System.exit(0);
         }
         else return;
     }
@@ -724,7 +739,8 @@ public class Main
     {
         if (matchType("id"))//a
         {
-            parameter_list_prime();
+            parameter_list_prime();//5
+            declaration_prime(); //0
         }
         else
         {
@@ -739,7 +755,18 @@ public class Main
             }
         }
     }
-    public void  type_specifier() //E
+    public void declaration_prime() //0 -> ,I0|@
+    {
+        if(match(","))
+        {
+            parameter();   //I
+            declaration_prime();
+        }
+        else if (look(""))//look for follows of 0
+        {}
+        else{error(",");}
+    }
+    public void  type_specifier() //E-> d | b | n
     {
         if (match("int"))//d
         {
@@ -752,9 +779,12 @@ public class Main
         else {error("Type Specifier");}
 
     }
-    public void parameters()  //F
-    {}
-    public void compound_statement() //G
+    public void parameters()  //F-> ED
+    {
+        type_specifier();
+        fun_declaration();
+    }
+    public void compound_statement() //G-> {JK}
     {
         if (match("{"))
         {
@@ -797,8 +827,15 @@ public class Main
             //check follows of 5
         }
     }
-    public void parameter() //I
-    {}
+    public void parameter() //I-> Ea5
+    {
+        type_specifier();
+        if (matchType("id"))//a
+        {//5
+            parameter_list_prime();
+        }
+        else {error("parameter" );}
+    }
     public void local_declaration() //J
     {
         if (look(";")||look("(")||look("["))
@@ -1017,25 +1054,131 @@ public class Main
         {error("relative operation ");}
     }
     public void addop() //W-> + | -
-    {}
+    {
+        if (match("+"))
+        {return;}
+        else if (match("-"))
+        {return;}
+            else {error("additive operand");}
+    }
     public void term() //X-> Zy
-    {}
+    {
+        factor();
+        term_prime();
+    }
     public void term_prime() //y-> YZy | @
-    {}
+    {
+        if (lookType("num)")||lookType("id")||look("("))
+        {
+            mulop();
+            factor();
+            term_prime();
+        }
+        else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("[")||look(";")||look(")")||look(")")||look(","))//follows y
+        {
+            return;
+        }
+        else
+        {error ("operand, ',', or ';' ");}
+    }
     public void mulop() //Y-> * | /
-    {}
-    public void factor() //Z -> (Q) | R | 1 | c
-    {}
+    {
+        if (match ("*"))
+        {
+            return;
+        }
+        else if (match("/"))
+        {
+            return;
+        }
+        else
+        {
+            error ("multiplication operand ");
+        }
+    }
+    public void factor() /*Z -> (Q) | R | 1 | c
+                         //R->a8
+                        //1->a(2)
+                        correction Z->(Q)|a new|c
+                        new -> 8 |(2)
+
+                        */
+    {
+        if (match("("))
+        {
+            expression();
+            if( match (")"))
+            {
+                return;
+            }
+            else {error(")");}
+        }
+        else if (matchType("id"))//first of R and 1
+        {
+            variable_call_discriminator();
+        }
+        else if (matchType("num"))
+        {return;}
+        else {error (" '(expression)', variable, call or number type ");}
+
+    }
+    public void variable_call_discriminator() //new -> 8 |(2)
+    {
+        if (match("(")) {
+            args();
+            if (match(")"))
+            {return;}
+            else{error(")");}
+        }
+        //first of 8 and follows of 8
+        else if (look("[")||look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(","))
+        {
+            stemmed_variable();
+        }
+
+    }
     public void call() //1-> a(2)
-    {}
+    {
+        if (matchType("id "))
+        {
+            if (match("("))
+            {
+                args();
+                if (match(")"))
+                {return;}
+                else {error(")");}
+            }
+            else {error("( ");}
+        }
+        else {error("id ");}
+    }
     public void call_prime() //1'
     {}
     public void args() //2 -> 3 | @
-    {}
+    {
+      if (lookType("num")||lookType("id")||look("("))
+      {expression();}
+        else if (look(")"))//follows of 2
+      {return;}
+        else {error("arguments");}
+    }
     public void args_list() //3-> Qv
-    {}
+    {
+        expression();
+        args_list_prime();
+    }
     public void args_list_prime() //v-> ,Qv | @
-    {}
+    {
+        if (match(","))
+        {
+         expression();
+         args_list_prime();
+        }
+        else if (match(")"))//follows of v
+        {return;}
+        else {error(",");}
+
+    }
 
 
 
