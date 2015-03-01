@@ -1,0 +1,93 @@
+
+INPUT:     /**************/
+
+INPUT:     /*************************
+
+INPUT:     i = 333;        ******************/       */
+OPERATOR:  *
+OPERATOR:  /
+
+INPUT:     
+
+INPUT:     iiii = 3@33;
+ID:        iiii  DEPTH:  0
+OPERATOR:  =
+INT:       3
+ERROR:     @
+INT:       33
+OPERATOR:  ;
+
+INPUT:     
+
+INPUT:     int g 4 cd (int u, int v)      {
+KEYWORD:   int
+ID:        g  DEPTH:  0
+INT:       4
+ID:        cd  DEPTH:  0
+OPERATOR:  (
+KEYWORD:   int
+ID:        u  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   int
+ID:        v  DEPTH:  0
+OPERATOR:  )
+OPERATOR:  {
+
+INPUT:     if(v == >= 0) return/*a comment*/ u;
+KEYWORD:   if
+OPERATOR:  (
+ID:        v  DEPTH:  1
+OPERATOR:  ==
+OPERATOR:  >=
+INT:       0
+OPERATOR:  )
+KEYWORD:   return
+ID:        u  DEPTH:  1
+OPERATOR:  ;
+
+INPUT:     else ret_urn gcd(vxxxxxxvvvvv, u-u/v*v);
+KEYWORD:   else
+ID:        ret  DEPTH:  1
+ERROR:     _
+ID:        urn  DEPTH:  1
+ID:        gcd  DEPTH:  1
+OPERATOR:  (
+ID:        vxxxxxxv  DEPTH:  1
+OPERATOR:  ,
+ID:        u  DEPTH:  1
+OPERATOR:  -
+ID:        u  DEPTH:  1
+OPERATOR:  /
+ID:        v  DEPTH:  1
+OPERATOR:  *
+ID:        v  DEPTH:  1
+OPERATOR:  )
+OPERATOR:  ;
+
+INPUT:            /* u-u/v*v == u mod v*/
+
+INPUT:     !   
+ERROR:     !
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:     
+
+INPUT:     return void while       void main()
+KEYWORD:   return
+KEYWORD:   void
+KEYWORD:   while
+KEYWORD:   void
+ID:        main  DEPTH:  0
+OPERATOR:  (
+OPERATOR:  )
+
+INPUT:     
+
+INPUT:     
+
+INPUT:     that!sa
+ID:        that  DEPTH:  0
+ERROR:     !
+ID:        sa  DEPTH:  0

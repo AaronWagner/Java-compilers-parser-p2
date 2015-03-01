@@ -1,0 +1,50 @@
+
+INPUT:     12 12321423423 
+INT:       12
+INT:       12321423423
+
+INPUT:     1.232 1232131.2 
+FLOAT:     1.232
+FLOAT:     1232131.2
+
+INPUT:     124E54 1E+56 187E-975
+FLOAT:     124E54
+FLOAT:     1E+56
+FLOAT:     187E-975
+
+INPUT:     143.8699E-23 2.3E4 5.8E+9
+FLOAT:     143.8699E-23
+FLOAT:     2.3E4
+FLOAT:     5.8E+9
+
+INPUT:     
+
+INPUT:     143.8699e-23 2.3e4 5.8e+9
+FLOAT:     143.8699
+ID:        e  DEPTH:  0
+OPERATOR:  -
+INT:       23
+FLOAT:     2.3
+ID:        e  DEPTH:  0
+INT:       4
+FLOAT:     5.8
+ID:        e  DEPTH:  0
+OPERATOR:  +
+INT:       9
+
+INPUT:     3@33;
+INT:       3
+ERROR:     @
+INT:       33
+OPERATOR:  ;
+
+INPUT:     the3Reds.34
+ID:        the  DEPTH:  0
+INT:       3
+ID:        Reds  DEPTH:  0
+ERROR:     .
+INT:       34
+
+INPUT:     .5E+34
+ERROR:     .
+FLOAT:     5E+34

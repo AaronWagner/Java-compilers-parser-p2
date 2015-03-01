@@ -1,0 +1,175 @@
+
+INPUT:     /*primary function: calc() calls the conversion functions and passes them the
+
+INPUT:     data needed for the conversions. It then returns converted values to main*/
+
+INPUT:     void calc(int fahr, int feet, int pounds, float* celsius, float* kelvin,
+KEYWORD:   void
+ID:        calc  DEPTH:  0
+OPERATOR:  (
+KEYWORD:   int
+ID:        fahr  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   int
+ID:        feet  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   int
+ID:        pounds  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   float
+OPERATOR:  *
+ID:        celsius  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   float
+OPERATOR:  *
+ID:        kelvin  DEPTH:  0
+OPERATOR:  ,
+
+INPUT:               int* inches, float* meters, double* kilograms)
+KEYWORD:   int
+OPERATOR:  *
+ID:        inches  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   float
+OPERATOR:  *
+ID:        meters  DEPTH:  0
+OPERATOR:  ,
+ID:        double  DEPTH:  0
+OPERATOR:  *
+ID:        kilogram  DEPTH:  0
+OPERATOR:  )
+
+INPUT:     {
+OPERATOR:  {
+
+INPUT:        //function calls
+
+INPUT:        calcTemp(fahr, celsius, kelvin);
+ID:        calcTemp  DEPTH:  1
+OPERATOR:  (
+ID:        fahr  DEPTH:  1
+OPERATOR:  ,
+ID:        celsius  DEPTH:  1
+OPERATOR:  ,
+ID:        kelvin  DEPTH:  1
+OPERATOR:  )
+OPERATOR:  ;
+
+INPUT:        calcDistance(feet, inches, meters);
+ID:        calcDist  DEPTH:  1
+OPERATOR:  (
+ID:        feet  DEPTH:  1
+OPERATOR:  ,
+ID:        inches  DEPTH:  1
+OPERATOR:  ,
+ID:        meters  DEPTH:  1
+OPERATOR:  )
+OPERATOR:  ;
+
+INPUT:        *kilograms = calcWeight(pounds);
+OPERATOR:  *
+ID:        kilogram  DEPTH:  1
+OPERATOR:  =
+ID:        calcWeig  DEPTH:  1
+OPERATOR:  (
+ID:        pounds  DEPTH:  1
+OPERATOR:  )
+OPERATOR:  ;
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:     
+
+INPUT:     /*primary function: calcTemp() converts degrees fahrenheit to degrees celsius
+
+INPUT:     and kelvin*/
+
+INPUT:     void calcTemp(int fahr, float* celsius, float* kelvin)
+KEYWORD:   void
+ID:        calcTemp  DEPTH:  0
+OPERATOR:  (
+KEYWORD:   int
+ID:        fahr  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   float
+OPERATOR:  *
+ID:        celsius  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   float
+OPERATOR:  *
+ID:        kelvin  DEPTH:  0
+OPERATOR:  )
+
+INPUT:     {
+OPERATOR:  {
+
+INPUT:        *celsius = (fahr - 32) * TEMPCONSTANT;
+OPERATOR:  *
+ID:        celsius  DEPTH:  1
+OPERATOR:  =
+OPERATOR:  (
+ID:        fahr  DEPTH:  1
+OPERATOR:  -
+INT:       32
+OPERATOR:  )
+OPERATOR:  *
+ID:        TEMPCONS  DEPTH:  1
+OPERATOR:  ;
+
+INPUT:        *kelvin = *celsius + 273.15;
+OPERATOR:  *
+ID:        kelvin  DEPTH:  1
+OPERATOR:  =
+OPERATOR:  *
+ID:        celsius  DEPTH:  1
+OPERATOR:  +
+FLOAT:     273.15
+OPERATOR:  ;
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:     
+
+INPUT:     /*primary function: calcDistance() converts feet into inches and meters*/
+
+INPUT:     void calcDistance(int feet, int* inches, float* meters)
+KEYWORD:   void
+ID:        calcDist  DEPTH:  0
+OPERATOR:  (
+KEYWORD:   int
+ID:        feet  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   int
+OPERATOR:  *
+ID:        inches  DEPTH:  0
+OPERATOR:  ,
+KEYWORD:   float
+OPERATOR:  *
+ID:        meters  DEPTH:  0
+OPERATOR:  )
+
+INPUT:     {
+OPERATOR:  {
+
+INPUT:        *inches = 12 * feet;
+OPERATOR:  *
+ID:        inches  DEPTH:  1
+OPERATOR:  =
+INT:       12
+OPERATOR:  *
+ID:        feet  DEPTH:  1
+OPERATOR:  ;
+
+INPUT:        *meters = feet * FEETCONSTANT;
+OPERATOR:  *
+ID:        meters  DEPTH:  1
+OPERATOR:  =
+ID:        feet  DEPTH:  1
+OPERATOR:  *
+ID:        FEETCONS  DEPTH:  1
+OPERATOR:  ;
+
+INPUT:     }
+OPERATOR:  }

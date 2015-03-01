@@ -1,0 +1,6 @@
+INPUT: /*stuff/* /* // */ stuff */ stuff // */ code // comment /*
+ID: code	DEPTH: 0
+INPUT: code */
+ID: code	DEPTH: 0
+*
+/

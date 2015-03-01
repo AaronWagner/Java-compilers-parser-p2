@@ -1,0 +1,34 @@
+//get a character
+tempChar = line.getChar();
+
+while(tempChar == '*')
+{
+   //keep eating star characters
+   tempChar = line.getChar();
+}
+
+//if you get a slash
+if(tempChar == '/')
+{
+   //decrease the comment depth
+   commentDepth--;
+   
+   if(commentDepth == 0)
+   {
+      //if you're out of the comment, go back to start
+      state = State.START;
+   }
+   else
+   {
+      //if you're still in a comment, go back to star comment
+      state = State.STARCOMMENT;
+   }
+}
+//if you got anything else
+else
+{
+   //go back to star comment
+   state = State.STARCOMMENT;
+}
+
+break;

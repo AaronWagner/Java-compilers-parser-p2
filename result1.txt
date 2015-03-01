@@ -1,0 +1,30 @@
+
+INPUT:     a name is sometimes 
+ID:        a  DEPTH:  0
+ID:        name  DEPTH:  0
+ID:        is  DEPTH:  0
+ID:        sometime  DEPTH:  0
+
+INPUT:     
+
+INPUT:     important     if   and  while it is
+ID:        importan  DEPTH:  0
+KEYWORD:   if
+ID:        and  DEPTH:  0
+KEYWORD:   while
+ID:        it  DEPTH:  0
+ID:        is  DEPTH:  0
+
+INPUT:     .
+ERROR:     .
+
+INPUT:     elseif else int return stuff void a float Float
+ID:        elseif  DEPTH:  0
+KEYWORD:   else
+KEYWORD:   int
+KEYWORD:   return
+ID:        stuff  DEPTH:  0
+KEYWORD:   void
+ID:        a  DEPTH:  0
+KEYWORD:   float
+ID:        Float  DEPTH:  0

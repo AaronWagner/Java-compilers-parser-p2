@@ -1,0 +1,33 @@
+
+INPUT:     <><=>=!!===/=
+OPERATOR:  <
+OPERATOR:  >
+OPERATOR:  <=
+OPERATOR:  >=
+ERROR:     !
+OPERATOR:  !=
+OPERATOR:  ==
+OPERATOR:  /
+OPERATOR:  =
+
+INPUT:     //this is a comment
+
+INPUT:     not a/**/ comment
+ID:        not  DEPTH:  0
+ID:        a  DEPTH:  0
+ID:        comment  DEPTH:  0
+
+INPUT:     
+
+INPUT:     /*this 
+
+INPUT:     is
+
+INPUT:     a       multil**ine */ comment
+ID:        comment  DEPTH:  0
+
+INPUT:     
+
+INPUT:     /*this is/* a nested */ comment*/ ponies!
+ID:        ponies  DEPTH:  0
+ERROR:     !

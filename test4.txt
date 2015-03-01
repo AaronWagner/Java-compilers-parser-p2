@@ -1,0 +1,10 @@
+testing
+}
+   levels of
+   {
+      indentation
+      with{
+         curly+-*,;
+         )(([]braces
+      }
+   }

@@ -1,0 +1,9 @@
+<><=>=!!===/=
+//this is a comment
+not a/**/ comment
+
+/*this 
+is
+a       multil**ine */ comment
+
+/*this is/* a nested */ comment*/ ponies!

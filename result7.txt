@@ -1,0 +1,142 @@
+
+INPUT:     //get a character
+
+INPUT:     tempChar = line.getChar();
+ID:        tempChar  DEPTH:  0
+OPERATOR:  =
+ID:        line  DEPTH:  0
+ERROR:     .
+ID:        getChar  DEPTH:  0
+OPERATOR:  (
+OPERATOR:  )
+OPERATOR:  ;
+
+INPUT:     
+
+INPUT:     while(tempChar == '*')
+KEYWORD:   while
+OPERATOR:  (
+ID:        tempChar  DEPTH:  0
+OPERATOR:  ==
+ERROR:     '
+OPERATOR:  *
+ERROR:     '
+OPERATOR:  )
+
+INPUT:     {
+OPERATOR:  {
+
+INPUT:        //keep eating star characters
+
+INPUT:        tempChar = line.getChar();
+ID:        tempChar  DEPTH:  1
+OPERATOR:  =
+ID:        line  DEPTH:  1
+ERROR:     .
+ID:        getChar  DEPTH:  1
+OPERATOR:  (
+OPERATOR:  )
+OPERATOR:  ;
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:     
+
+INPUT:     //if you get a slash
+
+INPUT:     if(tempChar == '/')
+KEYWORD:   if
+OPERATOR:  (
+ID:        tempChar  DEPTH:  0
+OPERATOR:  ==
+ERROR:     '
+OPERATOR:  /
+ERROR:     '
+OPERATOR:  )
+
+INPUT:     {
+OPERATOR:  {
+
+INPUT:        //decrease the comment depth
+
+INPUT:        commentDepth--;
+ID:        commentD  DEPTH:  1
+OPERATOR:  -
+OPERATOR:  -
+OPERATOR:  ;
+
+INPUT:        
+
+INPUT:        if(commentDepth == 0)
+KEYWORD:   if
+OPERATOR:  (
+ID:        commentD  DEPTH:  1
+OPERATOR:  ==
+INT:       0
+OPERATOR:  )
+
+INPUT:        {
+OPERATOR:  {
+
+INPUT:           //if you're out of the comment, go back to start
+
+INPUT:           state = State.START;
+ID:        state  DEPTH:  2
+OPERATOR:  =
+ID:        State  DEPTH:  2
+ERROR:     .
+ID:        START  DEPTH:  2
+OPERATOR:  ;
+
+INPUT:        }
+OPERATOR:  }
+
+INPUT:        else
+KEYWORD:   else
+
+INPUT:        {
+OPERATOR:  {
+
+INPUT:           //if you're still in a comment, go back to star comment
+
+INPUT:           state = State.STARCOMMENT;
+ID:        state  DEPTH:  2
+OPERATOR:  =
+ID:        State  DEPTH:  2
+ERROR:     .
+ID:        STARCOMM  DEPTH:  2
+OPERATOR:  ;
+
+INPUT:        }
+OPERATOR:  }
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:     //if you got anything else
+
+INPUT:     else
+KEYWORD:   else
+
+INPUT:     {
+OPERATOR:  {
+
+INPUT:        //go back to star comment
+
+INPUT:        state = State.STARCOMMENT;
+ID:        state  DEPTH:  1
+OPERATOR:  =
+ID:        State  DEPTH:  1
+ERROR:     .
+ID:        STARCOMM  DEPTH:  1
+OPERATOR:  ;
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:     
+
+INPUT:     break;
+ID:        break  DEPTH:  0
+OPERATOR:  ;

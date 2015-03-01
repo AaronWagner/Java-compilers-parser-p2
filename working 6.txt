@@ -1,26 +1,13 @@
-S -> BA
-i.e. EaCA *Done
-A -> BA | @	*Started
-** May need a long follows list
-** probably not followed by $
-B -> EaC   *Done *removed by S->EaCA
-C -> 4 | (F)G  *Done *renamed**
-4 -> ; | [c] *Done
-E -> d | b | n *Done
+S -> EaCA *Done
+A -> BA 
+B -> EaC   
+C -> 4 | (F)G  
+4 -> ; | [c] 
+E -> d | b | n 
 F -> ED
-D -> a50 | @  **renamed**
-//to do follows D
+D -> a50 | @  
 0 -> ,I0 | @
-/*
-0 decvleration prime
-I -> Ea5
-I param
-E type-specifier
-a id
-5 param-list-prime
-*/
-5 -> []|@
-//check follows 5
+5 -> [] | @
 G -> {JK}
 J -> CJ | @
 K -> LK | @

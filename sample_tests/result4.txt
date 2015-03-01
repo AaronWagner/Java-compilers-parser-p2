@@ -1,0 +1,42 @@
+
+INPUT:     testing
+ID:        testing  DEPTH:  0
+
+INPUT:     }
+OPERATOR:  }
+
+INPUT:        levels of
+ID:        levels  DEPTH:  -1
+ID:        of  DEPTH:  -1
+
+INPUT:        {
+OPERATOR:  {
+
+INPUT:           indentation
+ID:        indentat  DEPTH:  0
+
+INPUT:           with{
+ID:        with  DEPTH:  0
+OPERATOR:  {
+
+INPUT:              curly+-*,;
+ID:        curly  DEPTH:  1
+OPERATOR:  +
+OPERATOR:  -
+OPERATOR:  *
+OPERATOR:  ,
+OPERATOR:  ;
+
+INPUT:              )(([]braces
+OPERATOR:  )
+OPERATOR:  (
+OPERATOR:  (
+OPERATOR:  [
+OPERATOR:  ]
+ID:        braces  DEPTH:  1
+
+INPUT:           }
+OPERATOR:  }
+
+INPUT:        }
+OPERATOR:  }

@@ -1,0 +1,11 @@
+
+INPUT:     <><=>=!!===/=
+OPERATOR:  <
+OPERATOR:  >
+OPERATOR:  <=
+OPERATOR:  >=
+ERROR:     !
+OPERATOR:  !=
+OPERATOR:  ==
+OPERATOR:  /
+OPERATOR:  =
