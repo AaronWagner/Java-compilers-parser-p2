@@ -935,6 +935,12 @@ public class Main
         if (lookType("num")||lookType("id")||look("("))
         {
             expression();
+            if (match(";"))
+            {
+                return;
+            }
+            else
+            {error(";");}
         }
         else if (match(";"))
         {return;}
@@ -1286,7 +1292,7 @@ public class Main
          expression();
          args_list_prime();
         }
-        else if (match(")"))//follows of v
+        else if (look(")"))//follows of v
         {return;}
         else {error(",");}
 
