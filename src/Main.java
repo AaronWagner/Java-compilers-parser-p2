@@ -669,7 +669,7 @@ public class Main
     public void program() //S->EaCA
     {
         System.out.print("DECENDING \n***********************************************");
-        System.out.println("program\n TokenCounter:" + tokenCounter + "Token:" + tokens.get(tokenCounter).toString());
+        System.out.println("program\n TokenCounter:" + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         type_specifier();//E
         if (matchType("id")){}//a
         else
@@ -687,16 +687,16 @@ public class Main
     }
     public void declaration_list() //A->BA | @
     {
-        System.out.println("declaration list\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("declaration list\n TokenCounter:"+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         //check for first of B
         if (look("int")||look("void")||look("float"))//First of B {d b n}
         {
             declaration();
             declaration_list();
         }
-        if (match("$"))
+        else if (match("$"))
         {
-            System.out.println("Accepted TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+            System.out.println("Accepted TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter-1).toString());
             System.exit(0);
         }
         else return;
@@ -704,7 +704,7 @@ public class Main
 
     public void declaration()  //B->EaC
     {
-        System.out.println("declaration\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         type_specifier();//E
         if (matchType("id")){}//a
         else
@@ -717,7 +717,7 @@ public class Main
 
     public void stemmed_decleration()  //C->4 |(F)G
     {
-        System.out.println("stemmed declaration\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("stemmed declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (look(";")||look("["))
         {
             stemmed_vardecleration();//4
@@ -736,7 +736,7 @@ public class Main
     }
     public void stemmed_vardecleration() //4 -> ; | [c]
     {
-        System.out.println("stemmed var declaration\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("stemmed var declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match(";"))
         {
             return;
@@ -761,7 +761,7 @@ public class Main
     }
     public void fun_declaration()  //D->a50 | @
     {
-        System.out.println("function declaration\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id"))//a
         {
             parameter_list_prime();//5
@@ -782,7 +782,7 @@ public class Main
     }
     public void declaration_prime() //0 -> ,I0|@
     {
-        System.out.println("decleartion prime\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("decleartion prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if(match(","))
         {
             parameter();   //I
@@ -794,7 +794,7 @@ public class Main
     }
     public void  type_specifier() //E-> d | b | n
     {
-        System.out.println("type specifier\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("type specifier\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("int"))//d
         {
             return;
@@ -808,13 +808,13 @@ public class Main
     }
     public void parameters()  //F-> ED
     {
-        System.out.println("parameter\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         type_specifier();
         fun_declaration();
     }
     public void compound_statement() //G-> {JK}
     {
-        System.out.println("compound statement\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("compound statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("{"))
         {
             local_declaration();
@@ -833,11 +833,11 @@ public class Main
     }
     public void parameter_list() //H
     {
-        System.out.println("parameter list\n this method is empty and will need to be populated\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("parameter list\n this method is empty and will need to be populated\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
     }
     public void parameter_list_prime() //5
     {
-        System.out.println("parameter list prime\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("parameter list prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("["))
         {
             if (match("]"))
@@ -864,7 +864,7 @@ public class Main
     }
     public void parameter() //I-> Ea5
     {
-        System.out.println("parameter\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         type_specifier();
         if (matchType("id"))//a
         {//5
@@ -874,7 +874,7 @@ public class Main
     }
     public void local_declaration() //J
     {
-        System.out.println("local declaration\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("local declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (look(";")||look("(")||look("["))
         {
             stemmed_decleration();;
@@ -891,7 +891,7 @@ public class Main
     }
     public void statement_list() //K->LK
     {
-        System.out.println("statment list\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("statment list\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         //check first of statment
         if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
         {
@@ -900,12 +900,13 @@ public class Main
         }
         else if (look("}"))//check follows of K
         {
-            error("}");
+            return;
         }
+        else {error("}");}
     }
     public void statement()  //L-> M | G | N | O | P
     {
-        System.out.println("statement\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (lookType("num")||lookType("id")||look(";")||look("(") )//first of M
         {
             expressions_statement();
@@ -931,7 +932,7 @@ public class Main
     }
     public void expressions_statement()  //M->Q; | ;
     {
-        System.out.println("expression statement\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("expression statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (lookType("num")||lookType("id")||look("("))
         {
             expression();
@@ -946,9 +947,9 @@ public class Main
         {return;}
         else {error("expression statment");}
     }
-    public void selection_statement() //N-> e(Q)L6
+    public void selection_statement() //N-> e(Q)L6  //Todo fix if else
     {
-        System.out.println("selection statement\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("selection statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("if"))//e
         {
             if (match("("))
@@ -966,7 +967,7 @@ public class Main
     }
     public void local_declarations_prime()//6 -> fL | @
     {
-        System.out.println("local declaration prime\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("local declaration prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("else"))
         {
             if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//check first of statement
@@ -983,7 +984,7 @@ public class Main
     }
     public void iteration_statement() //O-> g(Q)L
     {
-        System.out.println("iteration statement\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("iteration statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("while"))
         {
             //(Q)L
@@ -1004,7 +1005,7 @@ public class Main
     }
     public void return_statement()  //P-> h7
     {
-        System.out.println("return statment\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("return statment\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("return"))//h
         {
             stemmed_return_statement();
@@ -1014,7 +1015,7 @@ public class Main
     }
     public void stemmed_return_statement() //7->;|Q;
     {
-        System.out.println("stemmed return statment\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("stemmed return statment\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match(";"))
         {return;}
         else  if (lookType("num")||lookType("id")||look("("))//todo check for first of Q
@@ -1033,7 +1034,7 @@ public class Main
             */
 
     {
-        System.out.println("expression\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id"))
         {
             stemmed_expression();
@@ -1053,22 +1054,30 @@ public class Main
             additive_expression_prime();// u term_prime
             stemmed_other_expression(); //9
         }
+        else if (matchType("int"))
+        {
+            term_prime(); //y term prime
+            additive_expression_prime();// u term_prime
+            stemmed_other_expression(); //9
+        }
+        else if (matchType("float"))
+        {
+            term_prime(); //y term prime
+            additive_expression_prime();// u term_prime
+            stemmed_other_expression(); //9
+        }
         else {error ("expression");}
 
     }
     public void stemmed_expression() //m -> 8yu9 | (2)yu9 | 8=Q
     {
-        System.out.println("stemmed expression\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
-
-        if (match("="))
-        {
-            expression();
-        }
-        else if (match("("))
+        System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+        if (match("("))
         {
             args(); //2
             if (match(")"))
             {
+
                 term_prime();  //y
                 additive_expression_prime(); //u
                 stemmed_other_expression(); //9
@@ -1076,6 +1085,14 @@ public class Main
             else
             {error (")");}
 
+        }
+        else if (look("["))
+        {
+            stemmed_variable();
+        }
+        else if (match("="))
+        {
+            simple_expression();
         }
         else
         {
@@ -1087,14 +1104,14 @@ public class Main
     }
     public void variable() //R-> a8
     {
-        System.out.println("variable\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("variable\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id"))
         {stemmed_variable();}
         else{error("id");}
     }
     public void stemmed_variable() //8->[Q]|@
     {
-        System.out.println("stemmed variable\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("stemmed variable\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("["))
         {
             expression();
@@ -1108,13 +1125,13 @@ public class Main
     }
     public void simple_expression() //T-> U9
     {
-        System.out.println("simple expression\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("simple expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         additive_expression();
         stemmed_other_expression();
     }
     public void stemmed_other_expression() //9->VU |@
     {
-        System.out.println("stemmed expression\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (look("!")||look(">")||look("=")||look("<"))
         {
             relop();
@@ -1128,26 +1145,28 @@ public class Main
 
     public void additive_expression() //U-> Xu
     {
-        System.out.println("additive expression\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("additive expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         term();
         additive_expression_prime();
     }
     public void additive_expression_prime() //u->WXu |@
     {
-        System.out.println("additive expression prime\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("additive expression prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (look("+")||look("-"))
         {
             addop();
             term();
             additive_expression_prime();
         }
-        else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(","))//follows of u
-        {}
+        else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look(")"))//follows of u
+        {
+            return;
+        }
         else {error("right hand of additive expression or end of expression");}
     }
     public void relop() //V -> <x | >x | == | !=
     {
-        System.out.println("relop\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("relop\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("<")||match(">"))
         {
 
@@ -1159,7 +1178,7 @@ public class Main
     }
     public void addop() //W-> + | -
     {
-        System.out.println("additive operation\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("additive operation\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("+"))
         {return;}
         else if (match("-"))
@@ -1168,20 +1187,21 @@ public class Main
     }
     public void term() //X-> Zy
     {
-        System.out.println("term\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("term\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         factor();
         term_prime();
     }
     public void term_prime() //y-> YZy | @
     {
-        System.out.println("term prime\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
-        if (lookType("num)")||lookType("id")||look("("))
+        System.out.println("term prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+        if (look("*")||look("/"))
         {
-            mulop();
+            mulop();  //this is an error
             factor();
             term_prime();
         }
-        else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("[")||look(";")||look(")")||look(")")||look(","))//follows y
+
+        else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(","))//follows y
         {
             return;
         }
@@ -1190,7 +1210,7 @@ public class Main
     }
     public void mulop() //Y-> * | /
     {
-        System.out.println("multiplication operation\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("multiplication operation\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match ("*"))
         {
             return;
@@ -1212,7 +1232,7 @@ public class Main
 
                         */
     {
-        System.out.println("factor\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("factor\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("("))
         {
             expression();
@@ -1228,12 +1248,16 @@ public class Main
         }
         else if (matchType("num"))
         {return;}
+        else if (matchType("int"))
+        {return;}
+        else if (matchType("float"))
+        {return;}
         else {error (" '(expression)', variable, call or number type ");}
 
     }
     public void variable_call_discriminator() //new -> 8 |(2) | =Q
     {
-        System.out.println("variable or call discriminator\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("variable or call discriminator\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("(")) {
             args();
             if (match(")"))
@@ -1249,7 +1273,7 @@ public class Main
     }
     public void call() //1-> a(2)
     {
-        System.out.println("call\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("call\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id "))
         {
             if (match("("))
@@ -1265,11 +1289,11 @@ public class Main
     }
     public void call_prime() //1'
     {
-        System.out.println("call prime\n This method is empty and will require population\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("call prime\n This method is empty and will require population\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
     }
     public void args() //2 -> 3 | @
     {
-        System.out.println("arguments\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("arguments\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
       if (lookType("num")||lookType("id")||look("("))
       {
           args_list();
@@ -1280,13 +1304,15 @@ public class Main
     }
     public void args_list() //3-> Qv
     {
-        System.out.println("arguments list\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("arguments list\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         expression();
-        args_list_prime();
+        if (look(")"))
+        {return;}
+        else {args_list_prime();}
     }
     public void args_list_prime() //v-> ,Qv | @
     {
-        System.out.println("arguments list prime\n TokenCounter:"+tokenCounter+"Token:"+tokens.get(tokenCounter).toString());
+        System.out.println("arguments list prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match(","))
         {
          expression();

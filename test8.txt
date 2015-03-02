@@ -11,10 +11,10 @@ void calc(int fahr, int feet, int pounds, float celsius, float kelvin,
 
 /*primary function: calcTemp() converts degrees fahrenheit to degrees celsius
 and kelvin*/
-void calcTemp(int fahr, float* celsius, float* kelvin)
+void calcTemp(int fahr, float celsius, float kelvin)
 {
-   celsius = (fahr - 32)  TEMPCONSTANT;
-   kelvin = *celsius + 273.15;
+   celsius = (fahr - 32) *  TEMPCONSTANT;
+   kelvin = celsius + 273.15;
 }
 
 /*primary function: calcDistance() converts feet into inches and meters*/
