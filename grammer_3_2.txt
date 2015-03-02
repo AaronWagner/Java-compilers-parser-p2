@@ -1,0 +1,40 @@
+Grammar:
+S -> EaCA
+A -> BA 
+B -> EaC   
+C -> 4 | (F)G  
+4 -> ; | [c] 
+E -> d | b | n 
+F -> ED
+D -> a50 | @  
+0 -> ,I0 | @
+5 -> [] | @
+G -> {JK}
+J -> CJ | @
+K -> LK | @
+L -> M | G | N | O | P
+M -> Q; | ;
+N -> e(Q)L6
+6 -> fL | @
+O -> g(Q)L
+P -> h7
+7 -> ; | Q;
+Q -> am |cyu9 |(Q)yu9
+m-> =Q | 8yu9
+R -> a8
+8 -> [Q] | @
+T -> U9
+9 -> VU | @
+V -> <x | >x | == | !=
+x -> = | @
+U -> Xu
+u -> WXu | @
+W -> + | -
+X -> Zy
+y -> YZy | @
+Y -> * | /
+Z -> (Q) | R | 1 | c
+1 -> a(2)
+2 -> 3 | @
+3 -> Qv
+v -> ,Qv | @

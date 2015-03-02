@@ -564,7 +564,9 @@ public class Main
          Token testToken=tokens.get(tokenCounter);
          if (testToken.getType().equals(input))
          {
+             System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
              tokenCounter++;
+
              return true;
          }
         return false;
@@ -586,6 +588,7 @@ public class Main
         Token testToken=tokens.get(tokenCounter);
         if (testToken.getLexum().equals(input))
         {
+            System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
             tokenCounter++;
             return true;
         }
@@ -610,6 +613,7 @@ public class Main
         Boolean match=false;
         for (String inputStringType: inputs) {
             if (testToken.getLexum().equals(inputStringType)) {
+                System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
                 tokenCounter++;
                 return true;
             }
@@ -635,6 +639,7 @@ public class Main
         Boolean match=false;
         for (String inputStringType: inputs) {
             if (testToken.getType().equals(inputStringType)) {
+                System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
                 match=true;
                 tokenCounter++;
                 return true;
@@ -743,10 +748,12 @@ public class Main
         }
         else if (match("["))
         {
-            matchType("num");
+            expression();
+
             if (match("]"))
             {
-                return;
+                if (match(";")){return;}
+                else {error(";");}
             }
             else
             {
@@ -872,13 +879,14 @@ public class Main
         }
         else {error("parameter" );}
     }
-    public void local_declaration() //J
+    public void local_declaration() //J->BJ | @
     {
         System.out.println("local declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        if (look(";")||look("(")||look("["))
+        if (look("int")||look("float")||look("void"))
         {
-            stemmed_decleration();;
-            local_declaration();
+            declaration();//C
+            local_declaration();//J
+
         }
         else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//followsb of J)
         {
@@ -921,7 +929,7 @@ public class Main
         }
         else if(look("while")) //first of O:iteration_statment
         {
-            statement();
+            iteration_statement();
         }
         else if(look("return")) //first og P :return_statement
         {
@@ -960,7 +968,7 @@ public class Main
                     statement();
                     local_declarations_prime();
                 }
-                else{error(")");}
+                else{error("selection )");}
             }
             else{error("(");}
         }
@@ -1121,7 +1129,7 @@ public class Main
         }
         else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("("))//check follows of 8
         {return;}
-        else {error("[");}
+        else {error("]");}
     }
     public void simple_expression() //T-> U9
     {
