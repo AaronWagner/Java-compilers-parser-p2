@@ -1081,7 +1081,7 @@ public class Main
         else {error ("expression");}
 
     }
-    public void stemmed_expression() //m -> 8yu9 | (2)yu9 | 8=Q
+    public void stemmed_expression() //m -> 8yu9 | (Q)yu9 | 8=Q
     {
         System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("("))
@@ -1147,7 +1147,7 @@ public class Main
         }
         else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("(")||look("<=")||look(">=")||look("==")|look("!="))//check follows of 8
         {return;}
-        else {error("]");}
+        else {error("operand expected");}
     }
     public void simple_expression() //T-> U9
     {
