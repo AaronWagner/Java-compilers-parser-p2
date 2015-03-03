@@ -984,7 +984,7 @@ public class Main
             }
             else{error("statement");}
         }
-        else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
+        else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return")||look("}"))
         {
          return;//check follows of 6
         }
@@ -1026,7 +1026,7 @@ public class Main
         System.out.println("stemmed return statment\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match(";"))
         {return;}
-        else  if (lookType("num")||lookType("id")||look("("))//todo check for first of Q
+        else  if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))//todo check for first of Q
         {
             expression();
             if (match(";"))
@@ -1037,6 +1037,10 @@ public class Main
     }
     public void expression() //Q-> R=Q | T
             /*Correction
+           Q->  var=expression | simple expression
+           R=Q|T    T->U9  U->Xu  u->WXu|@ X-> Zy
+                    T->Xu9
+                    T->Zyu9   Z->(Q)|R|1|c  1->a(2) R->a8 Z c-num
             Q -> (Q)yu9 | cyu9 | am
             m -> 8yu9 | (2)yu9 | 8=Q
             */
@@ -1054,7 +1058,7 @@ public class Main
             expression(); //Q expression
             term_prime(); //y term prime
             additive_expression_prime();// u term_prime
-            stemmed_other_expression(); //9
+            stemmed_other_expression();
         }
         else if (matchType("num"))
         {
@@ -1096,7 +1100,18 @@ public class Main
         }
         else if (look("["))
         {
-            stemmed_variable();
+            stemmed_variable();  //8
+            if (match("="))
+            {
+                simple_expression();
+            }
+            else
+            {
+                stemmed_variable(); //8
+                term_prime();  //y
+                additive_expression_prime(); //u
+                stemmed_other_expression(); //9
+            }
         }
         else if (match("="))
         {
@@ -1124,10 +1139,13 @@ public class Main
         {
             expression();
             if (match("]"))
-            {return;}
+            {
+
+                return;
+            }
             else {error("]");}
         }
-        else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("("))//check follows of 8
+        else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("(")||look("<=")||look(">=")||look("==")|look("!="))//check follows of 8
         {return;}
         else {error("]");}
     }
@@ -1140,7 +1158,7 @@ public class Main
     public void stemmed_other_expression() //9->VU |@
     {
         System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        if (look("!")||look(">")||look("=")||look("<"))
+        if (look("!")||look(">")||look("=")||look("<")||look("<=")||look(">=")||look("==")||look("!="))
         {
             relop();
             additive_expression();
@@ -1166,7 +1184,7 @@ public class Main
             term();
             additive_expression_prime();
         }
-        else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look(")"))//follows of u
+        else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows of u
         {
             return;
         }
@@ -1175,12 +1193,13 @@ public class Main
     public void relop() //V -> <x | >x | == | !=
     {
         System.out.println("relop\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        if (match("<")||match(">"))
-        {
-
-        }
-        else if(match("==")||match("!="))
-        {return;}
+        if (match("<"))
+        {}
+        else  if (match(">")){return;}
+        else if(match("==")){return;}
+        else if (match("!=")){return;}
+        else if (match(">=")){return;}
+        else if (match("<=")){return;}
         else
         {error("relative operation ");}
     }
@@ -1209,7 +1228,7 @@ public class Main
             term_prime();
         }
 
-        else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(","))//follows y
+        else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows y
         {
             return;
         }
@@ -1273,7 +1292,7 @@ public class Main
             else{error(")");}
         }
         //first of 8 and follows of 8
-        else if (look("[")||look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(","))
+        else if (look("[")||look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("==")||look("!=")||look(">=")||look("<="))
         {
             stemmed_variable();
         }
@@ -1331,8 +1350,5 @@ public class Main
         else {error(",");}
 
     }
-
-
-
 }
 //

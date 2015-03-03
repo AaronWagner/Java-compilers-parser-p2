@@ -1,0 +1,89 @@
+Project 3
+ Semantics
+ due 4/3/14
+ 12:00 AM (midnight)
+
+
+Project 3 is the construction of semantic analyzer. You are to include 
+in your parser appropriate checking not included in the grammar, but 
+defined by the language.
+
+
+This is going to be the test of the quality of your symbol
+
+table implemented during parsing. You are to determine and
+
+implement appropriate checks as discussed.
+
+
+Your project should be shar'd containing a makefile, source file,
+
+doc file, and typescript (showing your testing). The makefile file
+
+should be invoked with "make" creating an executable of p3. Your
+
+project will be invoked with p3 fn where fn is the data file to be
+
+analyzed.
+ p3 is the executable resulting from the make command 
+or is a script that executes your project.
+
+
+This project must be complete in that the lexical analyzer must be
+
+included to create the tokens required by the parser and
+
+semantic analyzer.
+
+
+Note that turnin will report the 2 day late date, if the project
+
+is submitted on this date a penalty will be assessed.
+
+
+Ensure your shar is properly constructed. 
+
+Use turnin for submission as
+
+
+turnin fn ree4620_3
+
+where fn is the shar'd file of your complete project.
+
+
+--------------------------
+
+
+The following represents a set of tests that might be considered. The
+
+list is not required, nor is it complete, but may be used as a goal
+
+for semantic analysis.
+
+
+functions declared int must have a return value
+
+all functions should have a return
+ ??
+parameters and arguments agree in number
+
+parameters and arguments agree in type
+
+operand agreement
+
+operand/operator agreement
+
+array index agreement
+
+variable declaration (all variables must be declared ... scope)
+
+variable declaration (all variables declared once ... scope)
+
+void functions cannot have a return value
+
+each program must have one main function
+
+return only simple structures
+id's should not be type void
+
+each function should be defined (actually a linker error)

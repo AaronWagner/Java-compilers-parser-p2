@@ -1,4 +1,4 @@
-/* test9  testing <=, <,>,>= float accept*/
+/* test3  testing <=, <,>,>= accept*/
 
 int gcd (int u , int v )
 {
@@ -10,6 +10,6 @@ int gcd (int u , int v )
 
 	if ( x >= 1)
 		return y;
-	if (x<2)
-		return 3.4E2;
+	if (x==2)
+		return 3;
 }
