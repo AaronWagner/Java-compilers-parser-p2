@@ -124,23 +124,26 @@ public class Main
     public void makeEndToken()
     {
         Token endtoken= new Token("$");
+        endtoken.setType("end");
         tokens.add(endtoken);
     }
 
     public void makePatterns()
     {
+        
 
         //myFloat;
 
         myNum=myNum.compile("\\A\\d+");
         myKeyword=myKeyword.compile("\\A(else|if|int|return|void|while)&&(\\b|\\B)");
         mySymbols=mySymbols.compile("\\A\\+|\\A-|\\A\\*|\\A/|\\A>=|\\A<=|\\A==|\\A!=|\\A=|\\A;|\\A,|\\A\\(|\\A\\)|\\A\\[|\\A\\]|\\A\\{|\\A\\}|\\A<|\\A>");
-        myFloat=myFloat.compile("\\A((([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+))([E][-+]?[0-9]+)?)|(([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+)|([1-9]+))([E][-+]?[0-9]+)");
+        myFloat=myFloat.compile("\\A(\\d+(\\.\\d+)?(E(\\+|\\-)?\\d+)?)");
+        //myFloat=myFloat.compile("\\A((([1-9]((([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+))([E][-+]?[0-9]+)?)|(([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+)|([1-9]+))([E][-+]?[0-9]++\\.[0-9]*)|([1-9]*\\.[0-9]+))([E][-+]?[0-9]+)?)|(([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+)|([1-9]+))([E][-+]?[0-9]+)");
         myID=myID.compile("\\A[a-zA-Z]+"); //This is catching on spaces and empty strings:TODO FIX
         myNextNum=myNextNum.compile("\\A\\d+");
         myNextKeyword=myNextKeyword.compile("(else|if|int|return|void|while)&&(\\b|\\B)");
         myNextSymbols=myNextSymbols.compile("\\+|-|\\*|/|<=|>=|==|!=|=|;|,|\\(|\\)|\\[|\\]|\\{|\\}|<|>");
-        myNextFloat=myNextFloat.compile("((([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+))([E][-+]?[0-9]+)?)|(([1-9]+\\.[0-9]*)|([1-9]*\\.[0-9]+)|([1-9]+))([E][-+]?[0-9]+)");
+        myNextFloat=myNextFloat.compile("(\\d+(\\.\\d+)?(E(\\+|\\-)?\\d+)?)");
         myNextID=myNextID.compile("[a-zA-Z]");
         //myID.;
         int pants=0; //debug variable pants for breakpoint
@@ -286,7 +289,7 @@ public class Main
 
             nextToken=getNextToken(remainingInputString);
             nextToken.setScope(scope);
-            //System.out.print(nextToken.toString()+"\n");
+            System.out.print(nextToken.toString()+"\n");
 
             if (nextToken.getLexum().equals("{"))
             {
@@ -330,6 +333,7 @@ public class Main
         // System.out.print("Input for getNextToken:\n"+ input);
         //check for keywords
         //System.out.print("\n+\n+\nINPUT\n\""+input+"\n\"\n+\n+\n");
+        System.out.print("\n Input in get next token: "+input+"\n");
         myKeywordMatcher= myKeyword.matcher(input.trim());
         myIdMatcher=myID.matcher(input.trim());
         myFloatMatcher=myFloat.matcher(input.trim());
@@ -888,7 +892,7 @@ public class Main
             local_declaration();//J
 
         }
-        else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//followsb of J)
+        else if (look("while")||look("if")||lookType("int")|| lookType("float")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return")||look("}"))//followsb of J)
         {
             return;
         }
@@ -901,7 +905,7 @@ public class Main
     {
         System.out.println("statment list\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         //check first of statment
-        if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
+        if (look("while")||look("if")||lookType("num")||lookType("int")|| lookType("float")||lookType("id")||look(";")||look("(")||look("{")||look("return"))
         {
             statement();
             statement_list();
@@ -915,7 +919,7 @@ public class Main
     public void statement()  //L-> M | G | N | O | P
     {
         System.out.println("statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        if (lookType("num")||lookType("id")||look(";")||look("(") )//first of M
+        if (lookType("num")||lookType("id")||look(";")||look("(")||lookType("int")|| lookType("float") )//first of M
         {
             expressions_statement();
         }
@@ -941,7 +945,7 @@ public class Main
     public void expressions_statement()  //M->Q; | ;
     {
         System.out.println("expression statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        if (lookType("num")||lookType("id")||look("("))
+        if (lookType("num")||lookType("id")||look("(")||lookType("int")|| lookType("float"))
         {
             expression();
             if (match(";"))
@@ -978,13 +982,13 @@ public class Main
         System.out.println("local declaration prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("else"))
         {
-            if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//check first of statement
+            if (look("while")||look("if")||lookType("num")||lookType("int")|| lookType("float")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//check first of statement
             {
                 statement();
             }
             else{error("statement");}
         }
-        else if (look("while")||look("if")||lookType("num")||lookType("id")||look(";")||look("(")||look("{")||look("return")||look("}"))
+        else if (look("while")||look("if")||lookType("num")|| lookType("int")|| lookType("float")||lookType("id")||look(";")||look("(")||look("{")||look("return")||look("}"))
         {
          return;//check follows of 6
         }
@@ -1055,10 +1059,15 @@ public class Main
         }
         else if (match("("))
         {
+            //Q->(Q)yu9
             expression(); //Q expression
+            if (match(")"))
+            {}
+            else {error(")");}
             term_prime(); //y term prime
             additive_expression_prime();// u term_prime
-            stemmed_other_expression();
+            stemmed_other_expression();//9
+
         }
         else if (matchType("num"))
         {
@@ -1321,7 +1330,7 @@ public class Main
     public void args() //2 -> 3 | @
     {
         System.out.println("arguments\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-      if (lookType("num")||lookType("id")||look("("))
+      if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))
       {
           args_list();
       }

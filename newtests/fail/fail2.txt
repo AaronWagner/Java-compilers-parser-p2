@@ -1,0 +1,17 @@
+int i = 100 + 1;
+
+void f(void)
+{
+	//Loopy loopity loop
+	while( i != 1 )
+	{
+			n = n - 1;
+	}
+}
+
+void main(int a, int b, int c)
+{
+	int j = 2;
+	f();
+	return;
+}
