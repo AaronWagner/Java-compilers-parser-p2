@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.regex.*;
 import java.util.Scanner;
 
@@ -43,7 +44,8 @@ public class Main
     int depth;
     int scope;
     int tokenCounter;
-
+    int scopeDepth;
+    ArrayList<HashMap> symbolTabel;
 
     class Token
     {
@@ -152,7 +154,7 @@ public class Main
 
     public String removeLineComments(String input)
     {
-        System.out.print("Input:"+input+"\n");
+       // System.out.print("Input:"+input+"\n");
         input+="  ";
         boolean foundline;
         boolean found;
@@ -289,7 +291,7 @@ public class Main
 
             nextToken=getNextToken(remainingInputString);
             nextToken.setScope(scope);
-            System.out.print(nextToken.toString()+"\n");
+            //System.out.print(nextToken.toString()+"\n");
 
             if (nextToken.getLexum().equals("{"))
             {
@@ -333,7 +335,7 @@ public class Main
         // System.out.print("Input for getNextToken:\n"+ input);
         //check for keywords
         //System.out.print("\n+\n+\nINPUT\n\""+input+"\n\"\n+\n+\n");
-        System.out.print("\n Input in get next token: "+input+"\n");
+        //System.out.print("\n Input in get next token: "+input+"\n");
         myKeywordMatcher= myKeyword.matcher(input.trim());
         myIdMatcher=myID.matcher(input.trim());
         myFloatMatcher=myFloat.matcher(input.trim());
@@ -568,8 +570,15 @@ public class Main
          Token testToken=tokens.get(tokenCounter);
          if (testToken.getType().equals(input))
          {
-             System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
-             tokenCounter++;
+
+             if (input.equals("$")) {
+                 System.out.println("Accepted: " + tokens.get(tokenCounter).toString() + "\n");
+             }
+             else
+             {
+                 System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
+             }
+                 tokenCounter++;
 
              return true;
          }
@@ -668,17 +677,19 @@ public class Main
     }
     public void error(String expected)
     {
-        System.out.println("Error "+expected+" expected. \n Have:\"" +
+        System.out.println("Error "+expected+" expected. \n Have: \"" +
                 tokens.get(tokenCounter).getLexum()+
-                "\"\n Of type: "+tokens.get(tokenCounter).getType());
+                "\"\n Of type: "+tokens.get(tokenCounter).getType()+
+                "\n on Token # "+tokenCounter+"\n");
         System.exit(-1);
     }
 // This starts the recusive decent methods
     /////////////////////////////////////////////////////////////////////////////////
     public void program() //S->EaCA
     {
-        System.out.print("DECENDING \n***********************************************");
-        System.out.println("program\n TokenCounter:" + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
+       // System.out.print("DECENDING \n***********************************************");
+        //System.out.println("program\n TokenCounter:" + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
+        scopeDepth=0;
         type_specifier();//E
         if (matchType("id")){}//a
         else
@@ -715,7 +726,10 @@ public class Main
     {
         System.out.println("declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         type_specifier();//E
-        if (matchType("id")){}//a
+        if (matchType("id"))
+            {
+
+            }//a
         else
         {
             error("Type id");
@@ -828,10 +842,14 @@ public class Main
         System.out.println("compound statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("{"))
         {
+            scopeDepth++;
             local_declaration();
             statement_list();
             if (match("}"))
-            {return;}
+            {
+                scopeDepth--;
+                return;
+            }
             else
             {
                 error("}");
@@ -844,7 +862,7 @@ public class Main
     }
     public void parameter_list() //H
     {
-        System.out.println("parameter list\n this method is empty and will need to be populated\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+        //System.out.println("parameter list\n this method is empty and will need to be populated\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
     }
     public void parameter_list_prime() //5
     {
@@ -1090,7 +1108,7 @@ public class Main
         else {error ("expression");}
 
     }
-    public void stemmed_expression() //m -> 8yu9 | (Q)yu9 | 8=Q
+    public void stemmed_expression() //m -> 8yu9 | (2)yu9 | 8=Q
     {
         System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("("))
@@ -1112,7 +1130,7 @@ public class Main
             stemmed_variable();  //8
             if (match("="))
             {
-                simple_expression();
+                expression();
             }
             else
             {
@@ -1124,7 +1142,7 @@ public class Main
         }
         else if (match("="))
         {
-            simple_expression();
+            expression();
         }
         else
         {
@@ -1209,8 +1227,15 @@ public class Main
         else if (match("!=")){return;}
         else if (match(">=")){return;}
         else if (match("<=")){return;}
+        //else if (match("=")){return;}
+        /*
+        else if (lookType("int")||lookType("float")||lookType("num")){return;}
+        else if (lookType("id")){return;}
+        else if (lookType("(")){return;}
+
         else
         {error("relative operation ");}
+        */
     }
     public void addop() //W-> + | -
     {
