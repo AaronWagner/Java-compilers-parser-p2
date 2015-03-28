@@ -46,16 +46,27 @@ public class Main
     int tokenCounter;
     int scopeDepth;
     ArrayList<HashMap> symbolTabel;
+    Token declerationRegister;
+    Token callRegister;
 
     class Token
     {
         private String myLexum;
         private String type;
+        private String assignedType;
         private int scopeDepth;
+        private boolean function;
+        private boolean array;
+        private int length;
+        private ArrayList<String> parameterList;
 
         Token(String inputToken)
         {
             myLexum=new String(inputToken);
+            length=0;
+            array=false;
+            function=false;
+            parameterList=new ArrayList<String>();
         }
 
         public void setLexum(String input)
@@ -64,19 +75,44 @@ public class Main
         }
         public String getLexum() {return myLexum;}
 
+
         public String getToken()
         { return myLexum;}
 
+        public void setFunction() {function=true;}
+        public void setParameter(String parameter) {parameterList.add(parameter); function=true;}
+
+        public void setLength(int length) {
+            this.length = length;
+            array=true;
+        }
+        public ArrayList<String>getParameterList()
+        {
+            return parameterList;
+        }
+        public int getLength()
+        {
+            return length;
+        }
+
         public void setScope(int inputScope)
         {
-            scopeDepth=inputScope;
+            this.scopeDepth=inputScope;
         }
         public int getScope()
-        {return scopeDepth;}
+        {return this.scopeDepth;}
 
         public void setType(String newType)
         {
             type=newType;
+        }
+        public void setAssignedType(String input)
+        {
+            assignedType=input;
+        }
+        public String getAssignedType()
+        {
+            return assignedType;
         }
 
         public String getType()
@@ -88,7 +124,7 @@ public class Main
         {
             String output = new String();
             output ="Token: \""+myLexum+"\"\n";
-            output+="Type: "+type+" Scope: "+scopeDepth+"\n";
+            output+="Type: "+type+" Scope: "+this.scopeDepth+"\n";
             return output;
         }
     }
@@ -117,6 +153,9 @@ public class Main
 
         }
         myMain.tokenCounter=0;
+        //Todo refactor and move this to program then redfine as private
+        myMain.symbolTabel=new ArrayList<HashMap>();
+        myMain.symbolTabel.add(new HashMap());
         myMain.makeEndToken();
         myMain.program();
         /*Token endToken=new Token("$")
@@ -675,6 +714,71 @@ public class Main
         return false;
 
     }
+    public boolean compareType(String inputOne, String inputTwo)
+    {
+        if ((inputOne!=null)&&(inputTwo!=null))
+        {
+            if (inputOne.equals(inputTwo)) {
+                return true;
+            } else {
+                System.out.println("REJECTED\n");
+                System.out.println("Type mismatch: " + inputOne + " with " + inputTwo + ".");
+                System.exit(-1);
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public boolean compareType(Collection<String> inputs)
+    {
+        boolean matches=true;
+
+        for (String inputString: inputs)
+        {
+            for (String otherInputString: inputs)
+            {
+                if ((inputString!=null)&&(otherInputString!=null))
+                {
+                    if (inputString.equals(otherInputString)) {
+                        matches = true;
+                    } else {
+                        System.out.println("REJECTED\n");
+                        System.out.println("Type mismatch: " + inputString + " with " + otherInputString + ".");
+                        System.exit(-1);
+                        matches = false;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+        return matches;
+    }
+
+    public String getType(String lexum)
+    {
+        boolean found=false;
+        String output=null; //will return null or call error if not found
+        Token storedToken;
+        for (int i=symbolTabel.size(); i>-1; i--)
+        {
+            storedToken=(Token) symbolTabel.get(i).get(lexum);
+            if (storedToken!=null)
+            {
+                found = true;
+                storedToken.getAssignedType();
+                break;
+            }
+            if (found) break;
+        }
+        return output;
+    }
+
     public void error(String expected)
     {
         System.out.println("Error "+expected+" expected. \n Have: \"" +
@@ -690,6 +794,7 @@ public class Main
        // System.out.print("DECENDING \n***********************************************");
         //System.out.println("program\n TokenCounter:" + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         scopeDepth=0;
+
         type_specifier();//E
         if (matchType("id")){}//a
         else
@@ -724,11 +829,13 @@ public class Main
 
     public void declaration()  //B->EaC
     {
+        String theType;
         System.out.println("declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        type_specifier();//E
+        theType=type_specifier();//E
+        tokens.get(tokenCounter).setAssignedType(theType);
         if (matchType("id"))
             {
-
+                symbolTabel.get(scopeDepth).put(tokens.get(tokenCounter-1).getLexum(), tokens.get(tokenCounter-1).getLexum().hashCode());
             }//a
         else
         {
@@ -784,11 +891,12 @@ public class Main
         }
 
     }
-    public void fun_declaration()  //D->a50 | @
+    public void fun_declaration(String input)  //D->a50 | @
     {
         System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id"))//a
         {
+            symbolTabel.get(scopeDepth).put(tokens.get(tokenCounter-1), tokens.get(tokenCounter-1).getLexum().hashCode());
             parameter_list_prime();//5
             declaration_prime(); //0
         }
@@ -817,25 +925,34 @@ public class Main
         {return;}
         else{error(",");}
     }
-    public void  type_specifier() //E-> d | b | n
+    public String  type_specifier() //E-> d | b | n
     {
         System.out.println("type specifier\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("int"))//d
-        {
-            return;
-        }
+            {
+                return "int";
+            }
         else if (match("void"))//b
-            {return;}
+            {
+                return "void";
+            }
         else if(match("float"))//n
-            {return;}
-        else {error("Type Specifier");}
+            {
+                return "float";
+            }
+        else
+            {
+                error("Type Specifier");
+                return null;
+            }
 
     }
     public void parameters()  //F-> ED
     {
         System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        type_specifier();
-        fun_declaration();
+        String theType;
+        theType=type_specifier();
+        fun_declaration(theType);
     }
     public void compound_statement() //G-> {JK}
     {
@@ -843,11 +960,13 @@ public class Main
         if (match("{"))
         {
             scopeDepth++;
+            //symbolTabel.add(new HashMap());
             local_declaration();
             statement_list();
             if (match("}"))
             {
                 scopeDepth--;
+                symbolTabel.remove(symbolTabel.size()-1);
                 return;
             }
             else

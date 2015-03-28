@@ -6,7 +6,7 @@
     int z;
     int w;
  x[3] = y+z;
- x[y]=y=z+5;
+ x[y]=5=z+5;
  x[y+z+w];
  a[y=x+z*y]=b+c;
  }
