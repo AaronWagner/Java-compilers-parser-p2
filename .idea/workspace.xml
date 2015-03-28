@@ -4,13 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d62f8ae7-75d1-403a-bea3-0eb69d23abc7" name="Default" comment="Removed troubleshooting statments&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/P2/Main$Token.class" afterPath="$PROJECT_DIR$/out/production/P2/Main$Token.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/P2/Main.class" afterPath="$PROJECT_DIR$/out/production/P2/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/new3.txt" afterPath="$PROJECT_DIR$/new3.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="d62f8ae7-75d1-403a-bea3-0eb69d23abc7" name="Default" comment="Removed troubleshooting statments&#10;" />
     <ignored path="P2.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
