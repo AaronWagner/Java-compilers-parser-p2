@@ -129,6 +129,12 @@ public class Main
         }
     }
 
+    class TypeValue
+    {
+        String type;
+        double value;
+        
+    }
 
     public static void main(String[] args) {
         Main myMain = new Main();
@@ -830,54 +836,70 @@ public class Main
     public void declaration()  //B->EaC
     {
         String theType;
+        Token theDeclared=tokens.get(tokenCounter);
+        Token checker;
+        TypeValue modifiers=new TypeValue();
         System.out.println("declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         theType=type_specifier();//E
         tokens.get(tokenCounter).setAssignedType(theType);
         if (matchType("id"))
             {
-                symbolTabel.get(scopeDepth).put(tokens.get(tokenCounter-1).getLexum(), tokens.get(tokenCounter-1).getLexum().hashCode());
+                checker=(Token)symbolTabel.get(scopeDepth).put(theDeclared.getLexum().hashCode(), theDeclared);
+                if (checker !=null)
+                {
+                    System.out.println("REJECTED \n duplicate lexum decliration in same scope\n have :"+checker.toString()+
+                            "allready declared when declaring "+theDeclared.toString());
+                    System.exit(-1);
+                }
             }//a
         else
         {
             error("Type id");
         }
-        stemmed_decleration();//C
+        modifiers=stemmed_decleration();//C
 
     }
 
-    public void stemmed_decleration()  //C->4 |(F)G
+    public TypeValue stemmed_decleration()  //C->4 |(F)G
     {
+        TypeValue output=new TypeValue();
         System.out.println("stemmed declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (look(";")||look("["))
         {
-            stemmed_vardecleration();//4
+            output=stemmed_vardecleration();//4
         }
         else if(match("("))//(F)G
         {
             parameters();//F
             if (match(")"))
             {
-                compound_statement();
+                output=compound_statement();
             }
             else {error(")");}
         }
         else {error("(");}
+        return  output;
 
     }
-    public void stemmed_vardecleration() //4 -> ; | [c]
+    public TypeValue stemmed_vardecleration() //4 -> ; | [c]
     {
+        TypeValue output=new TypeValue();
         System.out.println("stemmed var declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match(";"))
         {
-            return;
+            output.type=null;
+            output.value=0;
+            return output;
         }
         else if (match("["))
         {
-            expression();
+
+            output=expression();
 
             if (match("]"))
             {
-                if (match(";")){return;}
+                output.type="array";
+                if (match(";")){return output;}
                 else {error(";");}
             }
             else
@@ -889,6 +911,7 @@ public class Main
         {
             error("[");
         }
+        return output;
 
     }
     public void fun_declaration(String input)  //D->a50 | @
@@ -954,7 +977,7 @@ public class Main
         theType=type_specifier();
         fun_declaration(theType);
     }
-    public void compound_statement() //G-> {JK}
+    public TypeValue compound_statement() //G-> {JK}
     {
         System.out.println("compound statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("{"))
@@ -1176,7 +1199,7 @@ public class Main
         }
         else {error("; ");}
     }
-    public void expression() //Q-> R=Q | T
+    public TypeValue expression() //Q-> R=Q | T
             /*Correction
            Q->  var=expression | simple expression
            R=Q|T    T->U9  U->Xu  u->WXu|@ X-> Zy
