@@ -961,8 +961,8 @@ public class Main
         {
             scopeDepth++;
             //symbolTabel.add(new HashMap());
-            local_declaration();
-            statement_list();
+            local_declaration();   //J
+            statement_list();       //K
             if (match("}"))
             {
                 scopeDepth--;
@@ -1435,6 +1435,9 @@ public class Main
         else {error (" '(expression)', variable, call or number type ");}
 
     }
+
+    //will work from call register
+
     public void variable_call_discriminator() //new -> 8 |(2) | =Q
     {
         System.out.println("variable or call discriminator\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1471,6 +1474,8 @@ public class Main
     {
         System.out.println("call prime\n This method is empty and will require population\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
     }
+
+    //will work from call register
     public void args() //2 -> 3 | @
     {
         System.out.println("arguments\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
