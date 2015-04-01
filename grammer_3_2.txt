@@ -20,7 +20,7 @@ O -> g(Q)L
 P -> h7
 7 -> ; | Q;
 Q -> am |cyu9 |(Q)yu9
-m-> =Q | 8yu9
+m -> =Q | 8yu9
 R -> a8
 8 -> [Q] | @
 T -> U9

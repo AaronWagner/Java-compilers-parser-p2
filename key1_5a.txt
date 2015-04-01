@@ -1,13 +1,24 @@
-S - Program									a - ID
+a - ID
+c - num
+b - void
+d - int
+e - if
+f - else
+g - while
+h - return 
+n - float
+
+
+S-Program					
 A - declaration-list	
-B - declaration								c - num
-C - stemmed declarartion							b - void
-4 - stemmed-var-declaration					d - int
-D - stemmed params decleration							e - if
-E - type-specifier							f - else
-F - params									g - while
-G - compound-stmt							h - return 
-H - param-list								n - float
+B-declaration				
+C - stemmed declarartion				
+4-stemmed-var-declaration	
+D - stemmed params decleration					
+E-type-specifier			
+F-params					
+G-compound-stmt				
+H-param-list				
 5 - param-list-prime
 I - param
 J - local-declarations
