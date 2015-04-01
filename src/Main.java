@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.regex.*;
-import java.util.Scanner;
 
 // http://stackoverflow.com/questions/1657066/java-regular-expression-finding-comments-in-code
 //String clean = original.replaceAll( "//.*|(\"(?:\\\\[^\"]|\\\\\"|.)*?\")|(?s)/\\*.*?\\*/", "$1 " );
@@ -48,6 +47,7 @@ public class Main
     ArrayList<HashMap> symbolTabel;
     Token declerationRegister;
     Token callRegister;
+    Boolean debug;
 
     class Token
     {
@@ -146,6 +146,7 @@ public class Main
         myMain.depth=0;
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
+        myMain.debug =true;
         for (int i=0; i<myMain.inputArray.length; i++)
         {
             System.out.print("I="+i+":~"+myMain.inputArray[i]);
@@ -889,13 +890,13 @@ public class Main
             parameters(theFunction);//F
             if (match(")"))
             {
-                compound_statement(theFunction);
+                compound_statement(); //does not need parameters
             }
             else {error(")");}
         }
         else {error("(");}
 
-
+        return output;
     }
     public TypeValue stemmed_vardecleration() //4 -> ; | [c]
     {
@@ -936,8 +937,8 @@ public class Main
         System.out.println("decleartion prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if(match(","))
         {
-            parameter();   //I
-            declaration_prime();
+            parameter(theFunction);   //I
+            declaration_prime(theFunction);//0
         }
         else if (look(")"))//look for follows of 0
         {return;}
@@ -981,8 +982,9 @@ public class Main
         System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id"))//a
         {
-            symbolTabel.get(scopeDepth).put(tokens.get(tokenCounter-1).getLexum(), tokens.get(tokenCounter-1));
-
+            Token theParameter=tokens.get(tokenCounter-1);
+            symbolTabel.get(scopeDepth).put(theParameter.getLexum(), theParameter);
+            if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theFunction.parameterList.get(theFunction.parameterList.size()-1)+" added to function "+theFunction.getLexum()+".\n");}
             declaration_prime(theFunction); //0
         }
         else
@@ -1040,7 +1042,7 @@ public class Main
             {
                 if (look(",")||look(")")) ///check follows of 5
                 {
-                    return parameters;
+                    return output;
                 }
                 else
                 {
@@ -1050,21 +1052,27 @@ public class Main
             }
         } else if (look(",")||look(")")) ///check follows of 5
             {
-                return;
+                return output;
             }
             else
             {
                 error ("}");
             }
+        return output;
 
     }
-    public void parameter() //I-> Ea5
+    public void parameter(Token theFunction) //I-> Ea5
     {
+        String theType= new String();
         System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        type_specifier();   //E
+        theType=type_specifier();   //E
         if (matchType("id"))//a
-        {//5
-            parameter_list_prime();
+        {
+            Token theParameter=tokens.get(tokenCounter-1);
+            theFunction.parameterList.add(theType);
+            if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theType+" added to function "+theFunction.getLexum()+".\n");}
+            symbolTabel.get(symbolTabel.size()-1).put(theParameter.getLexum(), theParameter);
+            parameter_list_prime();//5
         }
         else {error("parameter" );}
     }
