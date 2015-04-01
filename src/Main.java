@@ -133,6 +133,7 @@ public class Main
     {
         String type;
         double value;
+        ArrayList<String> parameters;
         
     }
 
@@ -161,7 +162,7 @@ public class Main
         myMain.tokenCounter=0;
         //Todo refactor and move this to program then redfine as private
         myMain.symbolTabel=new ArrayList<HashMap>();
-        myMain.symbolTabel.add(new HashMap());
+        myMain.symbolTabel.add(new HashMap<String, Token>());
         myMain.makeEndToken();
         myMain.program();
         /*Token endToken=new Token("$")
@@ -802,12 +803,14 @@ public class Main
         scopeDepth=0;
 
         type_specifier();//E
+        Token theDeclared=tokens.get(tokenCounter);
+
         if (matchType("id")){}//a
         else
         {
             error("Type id");
         }
-        stemmed_decleration();//C
+        stemmed_decleration(theDeclared);//C
         declaration_list();//A
         if (match("$"))
         {
@@ -822,8 +825,8 @@ public class Main
         //check for first of B
         if (look("int")||look("void")||look("float"))//First of B {d b n}
         {
-            declaration();
-            declaration_list();
+            declaration();  //B
+            declaration_list();//A
         }
         else if (match("$"))
         {
@@ -845,6 +848,7 @@ public class Main
         if (matchType("id"))
             {
                 checker=(Token)symbolTabel.get(scopeDepth).put(theDeclared.getLexum().hashCode(), theDeclared);
+                System.out.print(theDeclared.getLexum()+" added to sysmbol table as a: "+ theType+".\n");
                 if (checker !=null)
                 {
                     System.out.println("REJECTED \n duplicate lexum decliration in same scope\n have :"+checker.toString()+
@@ -856,29 +860,41 @@ public class Main
         {
             error("Type id");
         }
-        modifiers=stemmed_decleration();//C
+       modifiers=stemmed_decleration(theDeclared);//C
+        if (modifiers!=null&&modifiers.type.equals("array"))
+        {
+            theDeclared.array=true;
+            if (modifiers.value!=0)
+            {
+                theDeclared.setLength((int) modifiers.value);
+            }
+        }
 
     }
 
-    public TypeValue stemmed_decleration()  //C->4 |(F)G
+    public TypeValue stemmed_decleration(Token theFunction)  //C->4 |(F)G
     {
         TypeValue output=new TypeValue();
         System.out.println("stemmed declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (look(";")||look("["))
         {
             output=stemmed_vardecleration();//4
+            if (output.type!=null&&output.type.equals("array"))
+            {
+                theFunction.setLength((int) output.value);
+            }
         }
         else if(match("("))//(F)G
         {
-            parameters();//F
+            parameters(theFunction);//F
             if (match(")"))
             {
-                output=compound_statement();
+                compound_statement(theFunction);
             }
             else {error(")");}
         }
         else {error("(");}
-        return  output;
+
 
     }
     public TypeValue stemmed_vardecleration() //4 -> ; | [c]
@@ -914,29 +930,8 @@ public class Main
         return output;
 
     }
-    public void fun_declaration(String input)  //D->a50 | @
-    {
-        System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        if (matchType("id"))//a
-        {
-            symbolTabel.get(scopeDepth).put(tokens.get(tokenCounter-1), tokens.get(tokenCounter-1).getLexum().hashCode());
-            parameter_list_prime();//5
-            declaration_prime(); //0
-        }
-        else
-        {
-            //check follows of D
-            if (look(")"))
-            {
-                return;
-            }
-            else
-            {
-                error (")");
-            }
-        }
-    }
-    public void declaration_prime() //0 -> ,I0|@
+
+    public void declaration_prime(Token theFunction) //0 -> ,I0|@
     {
         System.out.println("decleartion prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if(match(","))
@@ -970,27 +965,55 @@ public class Main
             }
 
     }
-    public void parameters()  //F-> ED
+    public void parameters(Token theFunction)  //F-> ED
     {
+
         System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         String theType;
         theType=type_specifier();
-        fun_declaration(theType);
+        theFunction.parameterList.add(theType);
+        //Todo fun decleration needs to return additional parameters to include in output
+        fun_declaration(theFunction);
+
+    }
+    public void fun_declaration(Token theFunction)  //D->a50 | @
+    {
+        System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+        if (matchType("id"))//a
+        {
+            symbolTabel.get(scopeDepth).put(tokens.get(tokenCounter-1).getLexum(), tokens.get(tokenCounter-1));
+
+            declaration_prime(theFunction); //0
+        }
+        else
+        {
+            //check follows of D
+            if (look(")"))
+            {}
+            else
+            {
+                error (")");
+            }
+        }
     }
     public TypeValue compound_statement() //G-> {JK}
     {
+        TypeValue output=new TypeValue();
+        //Todo may not need
         System.out.println("compound statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("{"))
         {
             scopeDepth++;
-            //symbolTabel.add(new HashMap());
+            symbolTabel.add(new HashMap<String, Token>());
             local_declaration();   //J
             statement_list();       //K
+
+            //Todo  JK need to affect output?
             if (match("}"))
             {
                 scopeDepth--;
                 symbolTabel.remove(symbolTabel.size()-1);
-                return;
+                return output;
             }
             else
             {
@@ -1001,13 +1024,15 @@ public class Main
         {
             error("}");
         }
+        return output;
     }
     public void parameter_list() //H
     {
         //System.out.println("parameter list\n this method is empty and will need to be populated\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
     }
-    public void parameter_list_prime() //5
+    public TypeValue parameter_list_prime() //5
     {
+        TypeValue output=new TypeValue();
         System.out.println("parameter list prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (match("["))
         {
@@ -1015,7 +1040,7 @@ public class Main
             {
                 if (look(",")||look(")")) ///check follows of 5
                 {
-                    return;
+                    return parameters;
                 }
                 else
                 {
@@ -1036,7 +1061,7 @@ public class Main
     public void parameter() //I-> Ea5
     {
         System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
-        type_specifier();
+        type_specifier();   //E
         if (matchType("id"))//a
         {//5
             parameter_list_prime();
@@ -1210,6 +1235,7 @@ public class Main
             */
 
     {
+        TypeValue output=new TypeValue(); //Todo needs to be populated
         System.out.println("expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         if (matchType("id"))
         {
@@ -1248,6 +1274,7 @@ public class Main
             stemmed_other_expression(); //9
         }
         else {error ("expression");}
+        return output;
 
     }
     public void stemmed_expression() //m -> 8yu9 | (2)yu9 | 8=Q
