@@ -156,7 +156,7 @@ public class Main
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
         myMain.debug =true;
-        myMain.debugMethods=false;
+        myMain.debugMethods=true;
         for (int i=0; i<myMain.inputArray.length; i++)
         {
             System.out.print("I="+i+":~"+myMain.inputArray[i]);
@@ -747,7 +747,7 @@ public class Main
             if (inputOne.equals(inputTwo)) {
                 return true;
             } else {
-                System.out.println("REJECTED\n");
+                System.out.println("REJECT\n");
                 System.out.println("Type mismatch: " + inputOne + " with " + inputTwo + ".");
                 System.exit(-1);
                 return false;
@@ -771,7 +771,7 @@ public class Main
                     if (inputString.equals(otherInputString)) {
                         matches = true;
                     } else {
-                        System.out.println("REJECTED\n");
+                        System.out.println("REJECT\n");
                         System.out.println("Type mismatch: " + inputString + " with " + otherInputString + ".");
                         System.exit(-1);
                         matches = false;
@@ -814,7 +814,7 @@ public class Main
         System.exit(-1);
     }
 
-    public Token find(String lexum)
+    public Token findToken(String lexum)
     {
         Token output=new Token("");
         HashMap <String, Token> holder;
@@ -834,6 +834,45 @@ public class Main
         }
         return output;
     }
+    public Token checkToken(String lexum)
+    {
+        Token output;
+        output=findToken(lexum);
+        if (output==null)
+        {
+            reject(lexum+" not defined in symbol table.");
+        }
+        return output;
+    }
+    public Token checkToken(Token checkingToken)
+    {
+        Token output;
+        output=findToken(checkingToken.getLexum());
+        if (output==null)
+        {
+            reject(checkingToken.getLexum()+" not defined in symbol table.");
+        }
+        return output;
+    }
+    public void reject(String message)
+    {
+        System.out.print("REJECT\n");
+        System.out.print(message+"\n");
+        System.exit(-1);
+    }
+    public void storeToken(Token input)
+    {
+        Token checker=null;
+        if (input!=null)
+        {
+            checker=(Token)symbolTabel.get(scopeDepth).put(input.getLexum(), input);
+            if (checker!=null)
+            {
+                reject(checker.getLexum()+" of type "+checker.getAssignedType()+" allready exists for this scope when attempting to define"+input.getLexum()+" of type "+input.getAssignedType() );
+            }
+        }
+    }
+
 // This starts the recursive decent methods
     /////////////////////////////////////////////////////////////////////////////////
     public void program() //S->EaCA
@@ -841,19 +880,34 @@ public class Main
        // System.out.print("DECENDING \n***********************************************");
         //System.out.println("program\n TokenCounter:" + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         scopeDepth=0;
+        Token input=new Token("input");
+        input.setAssignedType("int");
+        input.parameterList.add("void");
+        symbolTabel.get(scopeDepth).put(input.getLexum(), input);
+        Token output=new Token("output");
+        output.setAssignedType("void");
+        output.parameterList.add("int");
+        symbolTabel.get(scopeDepth).put(output.getLexum(), output);
+
         String type;
         type=type_specifier();//E
         Token theDeclared=tokens.get(tokenCounter);
 
-        if (matchType("id")){}//a
+        if (matchType("id")){
+            symbolTabel.get(scopeDepth).put(theDeclared.getLexum(),theDeclared);
+            theDeclared.setAssignedType(type);
+            if (debug){ System.out.print(theDeclared.getLexum()+" added to symbol table (in program) as a "+theDeclared.getAssignedType() +"\n");}
+        }//a
         else
         {
             error("Type id");
         }
         stemmed_decleration(theDeclared);//C
-        theDeclared.setAssignedType(type);
+        /*
         symbolTabel.get(scopeDepth).put(theDeclared.getLexum(), theDeclared);
         if (debug){ System.out.print(theDeclared.getLexum()+" added to symbol table (in program) as a "+theDeclared.getAssignedType() +"\n");}
+        moved to if match id
+        */
         declaration_list();//A
         if (match("$"))
         {
@@ -884,7 +938,7 @@ public class Main
     public void declaration()  //B->EaC
     {
         String theType;
-        Token checker;
+        Token checker=null;
         TypeValue modifiers = new TypeValue();
         if (debugMethods){System.out.println("declaration\n TokenCounter: " + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         }
@@ -893,6 +947,8 @@ public class Main
         theDeclared.setAssignedType(theType);
         if (matchType("id"))
             {
+                checker=(Token)symbolTabel.get(scopeDepth).put(theDeclared.getLexum(), theDeclared);
+                System.out.print(theDeclared.getLexum()+" added to symbol table (in declaration) as a: "+ theDeclared.getAssignedType()+".\n");
 
 
             }//a
@@ -901,6 +957,7 @@ public class Main
             error("Type id");
         }
        modifiers=stemmed_decleration(theDeclared);//C
+
 
         if (modifiers.type!=null&&modifiers.type.equals("array"))
         {
@@ -912,11 +969,10 @@ public class Main
                 //theType+=" array";
             }
         }
-        checker=(Token)symbolTabel.get(scopeDepth).put(theDeclared.getLexum(), theDeclared);
-        System.out.print(theDeclared.getLexum()+" added to symbol table (in declaration) as a: "+ theDeclared.getAssignedType()+".\n");
+
         if (checker !=null)
         {
-            System.out.println("REJECTED \n duplicate lexum decliration in same scope\n have :"+checker.toString()+
+            System.out.println("REJECT \n duplicate lexum decliration in same scope\n have :"+checker.toString()+
                     "allready declared when declaring "+theDeclared.toString());
             System.exit(-1);
         }
@@ -1346,7 +1402,7 @@ public class Main
             }
             else
             {
-                System.out.print("REJECTED\n Return without Parameter in function "+theFunction.getLexum()+" of return type "+ theFunction.getAssignedType()+"\n");
+                System.out.print("REJECT\n Return without Parameter in function "+theFunction.getLexum()+" of return type "+ theFunction.getAssignedType()+"\n");
                 System.exit(-1);
 
             }
@@ -1362,14 +1418,14 @@ public class Main
                 }
                 else
                 {
-                    System.out.print("REJECTED\n return value does not match return value type for function "+theFunction.getLexum()+" which is "+ theFunction.getAssignedType()+". \n" );
+                    System.out.print("REJECT\n return value does not match return value type for function "+theFunction.getLexum()+" which is "+ theFunction.getAssignedType()+". \n" );
                 }
             }
             //Todo uncomment after finishing typevalue of expression
             /*
             else
             {
-                System.out.print("REJECTED \n return value has null type: this is probably a compiler error please email aaron.p.wagner@gmail.com with details");
+                System.out.print("REJECT \n return value has null type: this is probably a compiler error please email aaron.p.wagner@gmail.com with details");
                 System.exit(-1);
             }
             */
@@ -1395,9 +1451,12 @@ public class Main
         if (debugMethods){
             System.out.println("expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
-        if (matchType("id"))
+        if (matchType("id"))//a
         {
-            stemmed_expression();
+            Token leftHandSide=tokens.get(tokenCounter-1);
+            checkToken(leftHandSide);
+
+            stemmed_expression(leftHandSide);//m
             //if (match("="))
 
         }
@@ -1435,14 +1494,21 @@ public class Main
         return output;
 
     }
-    public void stemmed_expression() //m -> 8yu9 | (2)yu9 | 8=Q
+    public void stemmed_expression(Token leftHandSide) //m -> 8yu9 | (2)yu9 | 8=Q
     {
         if (debugMethods){
             System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match("("))
         {
-            args(); //2
+            Token calledFunction;
+            if ((calledFunction=findToken(leftHandSide.getLexum()))!=null)
+            {}
+            else
+            {
+                reject(leftHandSide.getLexum()+" called, but not found in symbol table");
+            }
+            args(leftHandSide); //2
             if (match(")"))
             {
 
@@ -1658,7 +1724,8 @@ public class Main
         }
         else if (matchType("id"))//first of R and 1
         {
-            variable_call_discriminator();
+            Token leftHandSide=tokens.get(tokenCounter-1);
+            variable_call_discriminator(leftHandSide);
         }
         else if (matchType("num"))
         {return;}
@@ -1672,13 +1739,13 @@ public class Main
 
     //will work from call register
 
-    public void variable_call_discriminator() //new -> 8 |(2) | =Q
+    public void variable_call_discriminator(Token leftHandSide) //new -> 8 |(2) | =Q
     {
         if (debugMethods){
             System.out.println("variable or call discriminator\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match("(")) {
-            args();
+            args(leftHandSide);
             if (match(")"))
             {return;}
             else{error(")");}
@@ -1695,11 +1762,22 @@ public class Main
         if (debugMethods){
             System.out.println("call\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
+        Token callingFunction=tokens.get(tokenCounter);
+        Token calledFunction;
         if (matchType("id "))
         {
+            Token leftHandSide=tokens.get(tokenCounter-1);
+            if ((calledFunction=findToken(callingFunction.getLexum()))!=null)
+            {
+                if(debug){System.out.print(callingFunction.getLexum()+" found in Symbol Table\n");}
+            }
+            else
+            {
+                reject("Function: "+callingFunction.getLexum()+" not defined in symbol table.");
+            }
             if (match("("))
             {
-                args();
+                args(leftHandSide);
                 if (match(")"))
                 {return;}
                 else {error(")");}
@@ -1714,20 +1792,20 @@ public class Main
     }
 
     //will work from call register
-    public void args() //2 -> 3 | @
+    public void args(Token leftHandSide) //2 -> 3 | @
     {
         if (debugMethods){
             System.out.println("arguments\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
       if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))
       {
-          args_list();
+          args_list(leftHandSide);
       }
         else if (look(")"))//follows of 2
       {return;}
         else {error("arguments");}
     }
-    public void args_list() //3-> Qv
+    public void args_list(Token leftHandSide) //3-> Qv
     {
         if (debugMethods){
             System.out.println("arguments list\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1735,9 +1813,9 @@ public class Main
         expression();
         if (look(")"))
         {return;}
-        else {args_list_prime();}
+        else {args_list_prime(leftHandSide);}
     }
-    public void args_list_prime() //v-> ,Qv | @
+    public void args_list_prime(Token leftHandSide) //v-> ,Qv | @
     {
         if (debugMethods){
             System.out.println("arguments list prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1745,7 +1823,7 @@ public class Main
         if (match(","))
         {
          expression();
-         args_list_prime();
+         args_list_prime(leftHandSide);
         }
         else if (look(")"))//follows of v
         {return;}
