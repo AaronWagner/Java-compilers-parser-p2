@@ -1409,9 +1409,9 @@ public class Main
         }
         else  if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))//todo check for first of Q
         {
-            TypeValue returnValue;
+            Token returnValue;
             returnValue=expression();
-            if (returnValue.type!=null)
+            if (returnValue!=null&&returnValue.getAssignedType()!=null&&!returnValue.getAssignedType().equals(""))
             {
                 if (returnValue.type.equals(theFunction.getAssignedType()))
                 {// this is the proper condition
@@ -1436,7 +1436,7 @@ public class Main
         }
         else {error("; ");}
     }
-    public TypeValue expression() //Q-> R=Q | T
+    public Token expression() //Q-> R=Q | T
             /*Correction
            Q->  var=expression | simple expression
            R=Q|T    T->U9  U->Xu  u->WXu|@ X-> Zy
@@ -1447,52 +1447,56 @@ public class Main
             */
 
     {
+        Token leftHandSide=null;
         TypeValue output=new TypeValue(); //Todo needs to be populated
         if (debugMethods){
             System.out.println("expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (matchType("id"))//a
         {
-            Token leftHandSide=tokens.get(tokenCounter-1);
+            leftHandSide=tokens.get(tokenCounter-1);
             Token storedLHS=checkToken(leftHandSide);
             output.type=storedLHS.getAssignedType();
+            TypeValue modifier=new TypeValue();
 
-            stemmed_expression(leftHandSide);//m
+            modifier=stemmed_expression(leftHandSide);//m
             //if (match("="))
 
         }
         else if (match("("))
         {
             //Q->(Q)yu9
-            expression(); //Q expression
+            leftHandSide=expression(); //Q expression
             if (match(")"))
             {}
             else {error(")");}
-            term_prime(); //y term prime
-            additive_expression_prime();// u term_prime
-            stemmed_other_expression();//9
+            term_prime(leftHandSide); //y term prime
+            additive_expression_prime(leftHandSide);// u term_prime
+            stemmed_other_expression(leftHandSide);//9
 
         }
         else if (matchType("num"))
         {
-            term_prime(); //y term prime
-            additive_expression_prime();// u term_prime
-            stemmed_other_expression(); //9
+            leftHandSide=tokens.get(tokenCounter - 1);
+            term_prime(leftHandSide); //y term prime
+            additive_expression_prime(leftHandSide);// u term_prime
+            stemmed_other_expression(leftHandSide); //9
         }
         else if (matchType("int"))
         {
-            term_prime(); //y term prime
-            additive_expression_prime();// u term_prime
-            stemmed_other_expression(); //9
+            leftHandSide=tokens.get(tokenCounter - 1);
+            term_prime(leftHandSide); //y term prime
+            additive_expression_prime(leftHandSide);// u term_prime
+            stemmed_other_expression(leftHandSide); //9
         }
-        else if (matchType("float"))
-        {
-            term_prime(); //y term prime
-            additive_expression_prime();// u term_prime
-            stemmed_other_expression(); //9
+        else if (matchType("float")) {
+            leftHandSide=tokens.get(tokenCounter-1);
+            term_prime(leftHandSide); //y term prime
+            additive_expression_prime(leftHandSide);// u term_prime
+            stemmed_other_expression(leftHandSide); //9
         }
         else {error ("expression");}
-        return output;
+        return leftHandSide;
 
     }
     public TypeValue stemmed_expression(Token leftHandSide) //m -> 8yu9 | (2)yu9 | 8=Q
@@ -1503,20 +1507,14 @@ public class Main
         }
         if (match("("))
         {
-            Token calledFunction;
-            if ((calledFunction=findToken(leftHandSide.getLexum()))!=null)
-            {}
-            else
-            {
-                reject(leftHandSide.getLexum()+" called, but not found in symbol table");
-            }
+            checkToken(leftHandSide);
             args(leftHandSide); //2
             if (match(")"))
             {
 
-                term_prime();  //y
-                additive_expression_prime(); //u
-                stemmed_other_expression(); //9
+                term_prime(leftHandSide);  //y
+                additive_expression_prime(leftHandSide); //u
+                stemmed_other_expression(leftHandSide); //9
             }
             else
             {error (")");}
@@ -1533,9 +1531,9 @@ public class Main
             {
                 //what spould be the left hand side for this?!?!?
                 stemmed_variable(leftHandSide); //8
-                term_prime();  //y
-                additive_expression_prime(); //u
-                stemmed_other_expression(); //9
+                term_prime(leftHandSide);  //y
+                additive_expression_prime(leftHandSide); //u
+                stemmed_other_expression(leftHandSide); //9
             }
         }
         else if (match("="))
@@ -1545,12 +1543,13 @@ public class Main
         else
         {
             stemmed_variable(leftHandSide); //8
-            term_prime();  //y
-            additive_expression_prime(); //u
-            stemmed_other_expression(); //9
+            term_prime(leftHandSide);  //y
+            additive_expression_prime(leftHandSide); //u
+            stemmed_other_expression(leftHandSide); //9
         }
         return output;
     }
+    //This method is currently not called
     public void variable() //R-> a8
     {
         if (debugMethods){
@@ -1564,6 +1563,7 @@ public class Main
         }
         else{error("id");}
     }
+
     public TypeValue stemmed_variable(Token leftHandSide) //8->[Q]|@
     {
         TypeValue output=new TypeValue();
@@ -1572,7 +1572,7 @@ public class Main
         }
         if (match("["))
         {
-            TypeValue checker;
+            Token checker;
             checker=expression(); //Q
             if (match("]"))
             {
@@ -1588,23 +1588,23 @@ public class Main
         else {error("operand expected");}
         return output;
     }
-    public void simple_expression() //T-> U9
+    public void simple_expression(Token leftHandSide) //T-> U9
     {
         if (debugMethods){
             System.out.println("simple expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
-        additive_expression();
-        stemmed_other_expression();
+        additive_expression(leftHandSide);
+        stemmed_other_expression(leftHandSide);
     }
-    public void stemmed_other_expression() //9->VU |@
+    public void stemmed_other_expression(Token leftHandSide) //9->VU |@
     {
         if (debugMethods){
             System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (look("!")||look(">")||look("=")||look("<")||look("<=")||look(">=")||look("==")||look("!="))
         {
-            relop();
-            additive_expression();
+            relop(leftHandSide);
+            additive_expression(leftHandSide);
         }
         else if(look("]")||look(";")||look(")")||look(","))//follows of 9
         {return;}
@@ -1612,24 +1612,24 @@ public class Main
 
     }
 
-    public void additive_expression() //U-> Xu
+    public void additive_expression(Token leftHandSide) //U-> Xu
     {
         if (debugMethods){
             System.out.println("additive expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
-        term();
-        additive_expression_prime();
+        term(leftHandSide);
+        additive_expression_prime(leftHandSide);
     }
-    public void additive_expression_prime() //u->WXu |@
+    public void additive_expression_prime(Token leftHandSide) //u->WXu |@
     {
         if (debugMethods){
             System.out.println("additive expression prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (look("+")||look("-"))
         {
-            addop();
-            term();
-            additive_expression_prime();
+            addop(leftHandSide);
+            term(leftHandSide);
+            additive_expression_prime(leftHandSide);
         }
         else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows of u
         {
@@ -1637,7 +1637,7 @@ public class Main
         }
         else {error("right hand of additive expression or end of expression");}
     }
-    public void relop() //V -> <x | >x | == | !=
+    public void relop(Token leftHandSide) //V -> <x | >x | == | !=
     {
         if (debugMethods){
             System.out.println("relop\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1659,7 +1659,7 @@ public class Main
         {error("relative operation ");}
         */
     }
-    public void addop() //W-> + | -
+    public void addop(Token leftHandSide) //W-> + | -
     {
         if (debugMethods){
             System.out.println("additive operation\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1670,34 +1670,36 @@ public class Main
         {return;}
             else {error("additive operand");}
     }
-    public void term() //X-> Zy
+    public void term(Token leftHandSide) //X-> Zy
     {
         if (debugMethods){
             System.out.println("term\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
-        factor();
-        term_prime();
+        factor(leftHandSide);
+        term_prime(leftHandSide);
     }
-    public void term_prime() //y-> YZy | @
+    public Token term_prime(Token leftHandSide) //y-> YZy | @
     {
+        Token rightHandSide=null;
         if (debugMethods) {
             System.out.println("term prime\n TokenCounter: " + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         }
         if (look("*")||look("/"))
         {
-            mulop();  //this is an error
-            factor();
-            term_prime();
+            mulop(leftHandSide);  //this is an error
+            rightHandSide=factor(leftHandSide);
+            term_prime(leftHandSide);
         }
 
         else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows y
         {
-            return;
+            return rightHandSide;
         }
         else
         {error ("operand, ',', or ';' ");}
+        return rightHandSide;
     }
-    public void mulop() //Y-> * | /
+    public void mulop(Token leftHandSide) //Y-> * | /
     {
         if (debugMethods){
             System.out.println("multiplication operation\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1715,7 +1717,7 @@ public class Main
             error ("multiplication operand ");
         }
     }
-    public void factor() /*Z -> (Q) | R | 1 | c
+    public Token factor(Token leftHandSide) /*Z -> (Q) | R | 1 | c
                          //R->a8
                         //1->a(2)
                         correction Z->(Q)|a new|c
@@ -1723,31 +1725,42 @@ public class Main
 
                         */
     {
+        Token rightHandSide=null;
         if (debugMethods){
             System.out.println("factor\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match("("))
         {
-            expression();
+            rightHandSide=expression();
             if( match (")"))
             {
-                return;
+                return rightHandSide;
             }
             else {error(")");}
         }
         else if (matchType("id"))//first of R and 1
         {
-            Token leftHandSide=tokens.get(tokenCounter-1);
-            variable_call_discriminator(leftHandSide);
+            rightHandSide=tokens.get(tokenCounter-1);
+            variable_call_discriminator(rightHandSide);
         }
         else if (matchType("num"))
-        {return;}
+        {
+            rightHandSide=tokens.get(tokenCounter-1);
+            return rightHandSide;
+        }
         else if (matchType("int"))
-        {return;}
+        {
+            rightHandSide=tokens.get(tokenCounter-1);
+            return rightHandSide;
+        }
         else if (matchType("float"))
-        {return;}
+        {
+            rightHandSide=tokens.get(tokenCounter-1);
+            return rightHandSide;
+        }
         else {error (" '(expression)', variable, call or number type ");}
 
+        return rightHandSide;
     }
 
     //will work from call register
@@ -1771,6 +1784,7 @@ public class Main
         }
 
     }
+    //this method is not called
     public void call() //1-> a(2)
     {
         if (debugMethods){
@@ -1800,7 +1814,7 @@ public class Main
         }
         else {error("id ");}
     }
-    public void call_prime() //1'
+    public void call_prime(Token leftHandSide) //1'
     {
         System.out.println("call prime\n This method is empty and will require population\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
     }
