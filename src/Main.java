@@ -1454,7 +1454,8 @@ public class Main
         if (matchType("id"))//a
         {
             Token leftHandSide=tokens.get(tokenCounter-1);
-            checkToken(leftHandSide);
+            Token storedLHS=checkToken(leftHandSide);
+            output.type=storedLHS.getAssignedType();
 
             stemmed_expression(leftHandSide);//m
             //if (match("="))
@@ -1494,8 +1495,9 @@ public class Main
         return output;
 
     }
-    public void stemmed_expression(Token leftHandSide) //m -> 8yu9 | (2)yu9 | 8=Q
+    public TypeValue stemmed_expression(Token leftHandSide) //m -> 8yu9 | (2)yu9 | 8=Q
     {
+        TypeValue output=new TypeValue();
         if (debugMethods){
             System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
@@ -1522,14 +1524,15 @@ public class Main
         }
         else if (look("["))
         {
-            stemmed_variable();  //8
+            output=stemmed_variable(leftHandSide);  //8
             if (match("="))
             {
                 expression();
             }
             else
             {
-                stemmed_variable(); //8
+                //what spould be the left hand side for this?!?!?
+                stemmed_variable(leftHandSide); //8
                 term_prime();  //y
                 additive_expression_prime(); //u
                 stemmed_other_expression(); //9
@@ -1541,11 +1544,12 @@ public class Main
         }
         else
         {
-            stemmed_variable(); //8
+            stemmed_variable(leftHandSide); //8
             term_prime();  //y
             additive_expression_prime(); //u
             stemmed_other_expression(); //9
         }
+        return output;
     }
     public void variable() //R-> a8
     {
@@ -1553,27 +1557,36 @@ public class Main
             System.out.println("variable\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (matchType("id"))
-        {stemmed_variable();}
+        {
+            Token leftHandSide=tokens.get(tokenCounter-1);
+            checkToken(leftHandSide);
+            stemmed_variable(leftHandSide);
+        }
         else{error("id");}
     }
-    public void stemmed_variable() //8->[Q]|@
+    public TypeValue stemmed_variable(Token leftHandSide) //8->[Q]|@
     {
+        TypeValue output=new TypeValue();
         if (debugMethods){
             System.out.println("stemmed variable\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match("["))
         {
-            expression();
+            TypeValue checker;
+            checker=expression(); //Q
             if (match("]"))
             {
 
-                return;
+                return output;
             }
             else {error("]");}
         }
         else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("(")||look("<=")||look(">=")||look("==")|look("!="))//check follows of 8
-        {return;}
+        {
+            return output;
+        }
         else {error("operand expected");}
+        return output;
     }
     public void simple_expression() //T-> U9
     {
@@ -1741,6 +1754,7 @@ public class Main
 
     public void variable_call_discriminator(Token leftHandSide) //new -> 8 |(2) | =Q
     {
+        //todo look at this shouldn't match "=" call expression
         if (debugMethods){
             System.out.println("variable or call discriminator\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
@@ -1753,7 +1767,7 @@ public class Main
         //first of 8 and follows of 8
         else if (look("[")||look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("==")||look("!=")||look(">=")||look("<="))
         {
-            stemmed_variable();
+            stemmed_variable(leftHandSide);//8
         }
 
     }
