@@ -133,7 +133,9 @@ public class Main
         {
             String output = new String();
             output ="Token: \""+myLexum+"\"\n";
-            output+="Type: "+type+" Scope: "+this.scopeDepth+"\n";
+            output+="Type: "+type+". Scope: "+this.scopeDepth+"\n";
+            output+="Assigned Type:"+assignedType+"\n";
+
             return output;
         }
     }
@@ -758,6 +760,33 @@ public class Main
             return true;
         }
     }
+    public boolean compareType (Token left, Token right)
+    {
+        Boolean output=false;
+        if (left==null)
+        {
+            reject("left operator is null");
+        }
+        if (right.getAssignedType()==null)
+        {
+            return true;
+        }
+        if (left.getAssignedType()==null)
+        {
+            reject("left operator type is null\nLeft: \n"+left.toString()+"\n");
+        }
+        if (right.getAssignedType()==null)
+        {
+            reject("right operator type is null\nRight: \n" +
+                    right.toString()+"\n");
+        }
+        if (left.getAssignedType().equals(right.getAssignedType()))
+        {
+            output=true;
+        }
+        return output;
+
+    }
     public boolean compareType(Collection<String> inputs)
     {
         boolean matches=true;
@@ -785,6 +814,7 @@ public class Main
         }
         return matches;
     }
+
 
     public String getType(String lexum)
     {
@@ -848,9 +878,14 @@ public class Main
     {
         Token output;
         output=findToken(checkingToken.getLexum());
+
         if (output==null)
         {
             reject(checkingToken.getLexum()+" not defined in symbol table.");
+        }
+        else
+        {
+            checkingToken.setAssignedType(output.getAssignedType());
         }
         return output;
     }
@@ -858,8 +893,22 @@ public class Main
     {
         System.out.print("REJECT\n");
         System.out.print(message+"\n");
+        printSymbolTabel();
         System.exit(-1);
     }
+    public void printSymbolTabel()
+    {
+        System.out.println("SymbolTabel:");
+        for (int i=0; i<symbolTabel.size(); i++)
+        {
+            System.out.println("Scope:"+i);
+            System.out.print(symbolTabel.get(i).toString());
+
+
+        }
+    }
+
+
     public void storeToken(Token input)
     {
         Token checker=null;
@@ -869,6 +918,18 @@ public class Main
             if (checker!=null)
             {
                 reject(checker.getLexum()+" of type "+checker.getAssignedType()+" allready exists for this scope when attempting to define"+input.getLexum()+" of type "+input.getAssignedType() );
+            }
+        }
+    }
+    public void storeIfNewToken(Token input)
+    {
+        Token checker=null;
+        if (input!=null)
+        {
+            checker=(Token)symbolTabel.get(scopeDepth).put(input.getLexum(), input);
+            if (checker!=null)
+            {
+                symbolTabel.get(scopeDepth).put(input.getLexum(), checker);
             }
         }
     }
@@ -888,7 +949,8 @@ public class Main
         output.setAssignedType("void");
         output.parameterList.add("int");
         symbolTabel.get(scopeDepth).put(output.getLexum(), output);
-
+        scopeDepth++;
+        symbolTabel.add(new HashMap<String,Token>());
         String type;
         type=type_specifier();//E
         Token theDeclared=tokens.get(tokenCounter);
@@ -1098,10 +1160,10 @@ public class Main
         theType=type_specifier();
         theFunction.parameterList.add(theType);
         //Todo fun decleration needs to return additional parameters to include in output
-        fun_declaration(theFunction);
+        fun_declaration(theType, theFunction);
 
     }
-    public void fun_declaration(Token theFunction)  //D->a50 | @
+    public void fun_declaration(String inputtype, Token theFunction)  //D->a50 | @
     {
         if (debugMethods){
             System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1110,6 +1172,8 @@ public class Main
         {
             TypeValue modifiers;
             Token theParameter=tokens.get(tokenCounter-1);
+            theParameter.setAssignedType(inputtype);
+
             symbolTabel.get(scopeDepth).put(theParameter.getLexum(), theParameter);
             //System.out.print(theParameter.getLexum()+" added to symbol table (in fun_declaration) as a"+ theParameter.getAssignedType()+"\n");
             modifiers=parameter_list_prime(); //5
@@ -1119,9 +1183,12 @@ public class Main
                 type+=" array";
                 theFunction.parameterList.remove(theFunction.parameterList.size()-1);
                 theFunction.parameterList.add(type);
+                theParameter.setAssignedType(type);
                 theParameter.setLength((int)modifiers.value);
+
+
             }
-            if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theFunction.parameterList.get(theFunction.parameterList.size()-1)+" added to function "+theFunction.getLexum()+".\n");}
+            if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theFunction.parameterList.get(theFunction.parameterList.size()-1)+" added to a function "+theFunction.getLexum()+".\n");}
 
             //Todo check modifiers for type and integrate into last parameter on parameter list.
             declaration_prime(theFunction); //0
@@ -1216,6 +1283,8 @@ public class Main
         {
             Token theParameter=tokens.get(tokenCounter-1);
             theFunction.parameterList.add(theType);
+            theParameter.setAssignedType(theType);
+            //storeToken(theParameter);
             TypeValue modifiers=parameter_list_prime();//5
             if (modifiers.type!=null&&modifiers.type.equals("array"))
             {
@@ -1224,6 +1293,7 @@ public class Main
                 theFunction.parameterList.remove(theFunction.parameterList.size()-1);
                 theFunction.parameterList.add(type);
                 theParameter.setLength((int)modifiers.value);
+
             }
             if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theType+" added to function "+theFunction.getLexum()+".\n");}
             symbolTabel.get(symbolTabel.size()-1).put(theParameter.getLexum(), theParameter);
@@ -1456,10 +1526,20 @@ public class Main
         {
             leftHandSide=tokens.get(tokenCounter-1);
             Token storedLHS=checkToken(leftHandSide);
+            leftHandSide.setAssignedType(storedLHS.getAssignedType());
             output.type=storedLHS.getAssignedType();
             TypeValue modifier=new TypeValue();
 
             modifier=stemmed_expression(leftHandSide);//m
+            if (modifier!=null&&modifier.type!=null&&modifier.type.contains("array"))
+            {
+                if (!(leftHandSide.getAssignedType().contains("array")))
+                {
+                    String type=leftHandSide.getAssignedType();
+                    type+=" array";
+                }
+            }
+
             //if (match("="))
 
         }
@@ -1559,6 +1639,8 @@ public class Main
         {
             Token leftHandSide=tokens.get(tokenCounter-1);
             checkToken(leftHandSide);
+            leftHandSide.setAssignedType(checkToken(leftHandSide).getAssignedType());
+
             stemmed_variable(leftHandSide);
         }
         else{error("id");}
@@ -1678,7 +1760,7 @@ public class Main
         factor(leftHandSide);
         term_prime(leftHandSide);
     }
-    public Token term_prime(Token leftHandSide) //y-> YZy | @
+    public void term_prime(Token leftHandSide) //y-> YZy | @
     {
         Token rightHandSide=null;
         if (debugMethods) {
@@ -1686,18 +1768,28 @@ public class Main
         }
         if (look("*")||look("/"))
         {
-            mulop(leftHandSide);  //this is an error
-            rightHandSide=factor(leftHandSide);
+            mulop(leftHandSide);  //this will need to return an indcator of multiply or divide for intermediate code generation
+            rightHandSide=factor(leftHandSide); //Z
+            if (compareType(leftHandSide, rightHandSide))
+            {
+                System.out.print("\n Good multiplication or division. \n");
+                //intermediate code generation will go here
+            }
+            else
+            {
+
+                reject("multiplication operation between different types have "+leftHandSide.getLexum()+" of type "+leftHandSide.getAssignedType() +" and "+rightHandSide.getLexum()+" of type "+ rightHandSide.getAssignedType()+".");
+            }
             term_prime(leftHandSide);
         }
 
         else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows y
         {
-            return rightHandSide;
+            return ;
         }
         else
         {error ("operand, ',', or ';' ");}
-        return rightHandSide;
+        return ;
     }
     public void mulop(Token leftHandSide) //Y-> * | /
     {
@@ -1741,6 +1833,8 @@ public class Main
         else if (matchType("id"))//first of R and 1
         {
             rightHandSide=tokens.get(tokenCounter-1);
+            checkToken(rightHandSide);
+            if (debug){System.out.print(rightHandSide.toString());}
             variable_call_discriminator(rightHandSide);
         }
         else if (matchType("num"))
