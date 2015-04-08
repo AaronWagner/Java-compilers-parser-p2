@@ -1,17 +1,42 @@
-/* test21  testing float accept*/
 
-int q[6];
+/* test for basic functionality of proj 3 - pass */
+/* test 21 - relop expression must return int */
 
-int noclue(int z[])
+int x;
+int y;
+
+
+int my ( float b, int c)
 {
-	int s;
-	if(z[1]=7)
-		return z;
-	while(r>z)
-	{
-		if (x==2)
-			return 3.4E-6;
-	}
+	int z;
+	
+	z = z+c;
 
+	return z;
+}
+
+
+void main( int x, int y )
+{
+	float q;
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(q,z);
+	}
+	z = 7 < y;
+
+}
+
+int something( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
 
 }

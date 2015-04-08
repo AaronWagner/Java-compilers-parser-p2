@@ -1,16 +1,41 @@
-/* test12  testing declarations accept*/
 
-float z;
+/* test for basic functionality of proj 3 - fail */
+/* test 12 - test function param miscount */
 
-float noclue(int z, float r)
+int x;
+int y;
+
+
+int my ( float b, int c)
 {
-	int s;
-	if(z=7)
-		return z;
-	while(r>z)
-	{if (x==2)
-			return x;
+	int z;
+	
+	z = z+c;
+
+	return z+c;
+}
+
+
+void main( int x, int y )
+{
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(1.2, 2, z);
+	
 	}
 
+}
+
+int something( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
 
 }

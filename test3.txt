@@ -1,10 +1,23 @@
-testing
+
+/* test for basic functionality of proj 3 - should fail */
+/* test 3 - 2 methods, scope check on b */
+
+int x;
+int y;
+
+void main ( int x, int y )
 {
-   levels of
-   {
-      indentation
-      with{
-         curly+-*,;
-         )(([]braces
-      }
-   }
+	int z;
+	
+	z = x + b;
+
+}
+
+int my ( float b, int u)
+{
+	int z;
+	
+	z = z+y;
+
+	return z;
+}

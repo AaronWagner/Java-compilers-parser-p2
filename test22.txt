@@ -1,19 +1,44 @@
-/* test22  prog from book */
 
-int x[10];
+/* test for basic functionality of proj 3 - pass */
+/* test 21 - relop expression must return int */
 
-int minloc(int a[], int low, int high)
-{ int z; int x; int k;
-	k=low;
-	x =a[low];
-	z=low +1;
-	while (z<high)
-	{ if (a[z]<x)
-		{ x=a[z];
-			k=i;
-	 
-		}
-		z=z+1;
+int x;
+int y;
+
+
+int my ( float b, int c)
+{
+	int z;
+	
+	z = z+c;
+
+	return z;
+}
+
+
+void main( int x, int y )
+{
+	float q;
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(q,z);
 	}
-	return k;
+	
+	if (q)
+		z=z+1;
+
+}
+
+int something( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
+
 }

@@ -10,9 +10,15 @@ bool look (Collection <String> input)
 bool lookType (Collection <String> input)
 These four methods are overloaded to accept Collections of strings.  These four methods compare the current token,  with the input with match and look comparing lexums, and matchType and lookType comparing Token type (Tokens are typed as keyword, int, float, operand, error, and the unique end type for "$").  match (match and matchType) methods produce the side effect of advancing the current by incrementing the currentToken counter. 
 
+Significant expansion is performed to add the semantic analysis.  Previously void methods () now have a signature of Token method(Token leftHandSide) where a right hand side token is returned or where a method would modify a previous right hand side token a TypeValue containing a string type that is then checked to modify a typevalue.  Methods that do not match a token and "drop out" return a null, this requires significant nullchecking to be added to comparison methods, because Tokens are allowablefor comparison, 
+
+bool compareToken(Token left, Token right) is the primary method for this method compares the types between two tokens seperated by and operator.  Comparetoken returns true for tokens that match type, or null right hand tokens. Before it can return false compare token will reject ather than return false compareToken
+
+
 void error (String expected)
 The other significant method is the void error (String input) method which exits the system after outputting the current token, then the expected token, tokenType, or a general description of what was needed.  This exit is a -1 or improper exit, explicitly describing the source file as incorrect. 
 
+void reject (String error) now supersedes the error method so that 
 
 a - ID
 c - num

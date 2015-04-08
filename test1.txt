@@ -1,5 +1,15 @@
-a name is sometimes 
 
-important     if   and  while it is
-.
-elseif else int return stuff void a float Float
+/* test for basic funtionality of proj 3 - should pass */
+/* test 1 */
+
+int x;
+int y;
+
+void main ( int x, int y )
+{
+	int z;
+	
+	z = x + y;
+
+}
+

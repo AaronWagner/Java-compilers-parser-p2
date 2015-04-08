@@ -1,15 +1,41 @@
-/* test10  testing mult compd stmts accept*/
+
+/* test for basic functionality of proj 3 - fail */
+/* test 10 - test no main function */
+
+int x;
+int y;
 
 
-float noclue (int z, float r)
+int my ( float b, int c)
 {
-	if(z=7)
-		return z;
-	while(r>z)
+	int z;
+	
+	z = z+c;
+
+	return z+c;
+}
+
+
+void something( int x, int y )
+{
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
 	{
-		if (x==2)
-			return x;
+		z=my(1.2, 2);
+	
 	}
 
+}
+
+int other( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
 
 }

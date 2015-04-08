@@ -1,34 +1,32 @@
-//get a character
-tempChar = line.getChar();
 
-while(tempChar == '*')
+/* test for basic functionality of proj 3 - fail*/
+/* test 7 - test simple function return */
+
+int x;
+int y;
+
+
+int my ( float b, int c)
 {
-   //keep eating star characters
-   tempChar = line.getChar();
+	int z;
+	
+	z = z+c;
+
+	return b+c;
 }
 
-//if you get a slash
-if(tempChar == '/')
+
+void main ( int x, int y )
 {
-   //decrease the comment depth
-   commentDepth--;
-   
-   if(commentDepth == 0)
-   {
-      //if you're out of the comment, go back to start
-      state = State.START;
-   }
-   else
-   {
-      //if you're still in a comment, go back to star comment
-      state = State.STARCOMMENT;
-   }
-}
-//if you got anything else
-else
-{
-   //go back to star comment
-   state = State.STARCOMMENT;
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(1, 2);
+	
+	}
+
 }
 
-break;

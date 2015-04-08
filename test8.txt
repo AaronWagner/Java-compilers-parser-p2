@@ -1,25 +1,32 @@
-/*primary function: calc() calls the conversion functions and passes them the
-data needed for the conversions. It then returns converted values to main*/
-void calc(int fahr, int feet, int pounds, float celsius, float kelvin,
-          int inches, float meters, float kilograms)
+
+/* test for basic functionality of proj 3 - pass */
+/* test 8 - test simple function return */
+
+int x;
+int y;
+
+
+int my ( float b, int c)
 {
-   //function calls
-   calcTemp(fahr, celsius, kelvin);
-   calcDistance(feet, inches, meters);
-   kilograms = calcWeight(pounds);
+	int z;
+	
+	z = z+c;
+
+	return z+c;
 }
 
-/*primary function: calcTemp() converts degrees fahrenheit to degrees celsius
-and kelvin*/
-void calcTemp(int fahr, float celsius, float kelvin)
+
+void main ( int x, int y )
 {
-   celsius = (fahr - 32) *  TEMPCONSTANT;
-   kelvin = celsius + 273.15;
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(1.2, 2);
+	
+	}
+
 }
 
-/*primary function: calcDistance() converts feet into inches and meters*/
-void calcDistance(int feet, int inches, float meters)
-{
-   inches = 12 * feet;
-   meters = feet * FEETCONSTANT;
-}

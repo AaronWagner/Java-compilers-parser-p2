@@ -60,6 +60,7 @@ public class Main
         private boolean array;
         private int length;
         private ArrayList<String> parameterList;
+        boolean returned;
 
         Token(String inputToken)
         {
@@ -68,6 +69,7 @@ public class Main
             array=false;
             function=false;
             parameterList=new ArrayList<String>();
+            returned=false;
         }
 
         public void setLexum(String input)
@@ -150,7 +152,7 @@ public class Main
 
     public static void main(String[] args) {
         Main myMain = new Main();
-        System.out.print("Aaron Wagner COP 5625 P1 \n \n");
+        //System.out.print("Aaron Wagner COP 5625 P1 \n \n");
         myMain.targetFile=args[0];
         myMain.loadFile();
         myMain.makePatterns();
@@ -161,7 +163,7 @@ public class Main
         myMain.debugMethods=true;
         for (int i=0; i<myMain.inputArray.length; i++)
         {
-            System.out.print("I="+i+":~"+myMain.inputArray[i]);
+            if (myMain.debug) System.out.print("I="+i+":~"+myMain.inputArray[i]);
         }
         for (int i=0; i<myMain.inputArray.length; i++)
         {
@@ -441,11 +443,28 @@ public class Main
 
             remainingInputString=input.substring(myIdMatcher.end(), input.length());
         }
+
         else if (myFloatMatcher.find())
         {
-            returnedToken = new Token(myFloatMatcher.group());
-            returnedToken.setType("float");
+            String possibleFloat=(myFloatMatcher.group());
+            Matcher myNumchecker=myNum.matcher(possibleFloat);
+            myNumchecker.find();
+            String possibleInt=(myNumchecker.group());
+            if (possibleFloat.equals(possibleInt))
+            {
+                returnedToken=new Token(possibleInt);
+                returnedToken.setType("int");
+            }
+            else
+            {
+                returnedToken=new Token(possibleFloat);
+                returnedToken.setType("float");
+            }
+
+            //returnedToken.setType("float");
             remainingInputString=input.substring(myFloatMatcher.end(), input.length());
+
+
         }
         else if (myNumMatcher.find())
         {
@@ -453,6 +472,7 @@ public class Main
             returnedToken.setType("int");
             remainingInputString=input.substring(myNumMatcher.end(), input.length());
         }
+
         else if (mySymbolMatcher.find())
         {
             returnedToken= new Token(mySymbolMatcher.group());
@@ -631,13 +651,14 @@ public class Main
          {
 
              if (input.equals("$")) {
-                 System.out.println("Accepted: " + tokens.get(tokenCounter).toString() + "\n");
+                 System.out.println("ACCEPT: " + tokens.get(tokenCounter).toString() + "\n");
+                 System.out.println("ACCEPT");
              }
              else
              {
-                 if (debugMethods){
-                     System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");
-                 }
+
+                     if (debug){System.out.println("Accepted: "+tokens.get(tokenCounter).toString()+"\n");}
+
              }
                  tokenCounter++;
 
@@ -742,7 +763,8 @@ public class Main
         return false;
 
     }
-    public boolean compareType(String inputOne, String inputTwo)
+
+    /*public boolean compareType(String inputOne, String inputTwo)
     {
         if ((inputOne!=null)&&(inputTwo!=null))
         {
@@ -750,7 +772,7 @@ public class Main
                 return true;
             } else {
                 System.out.println("REJECT\n");
-                System.out.println("Type mismatch: " + inputOne + " with " + inputTwo + ".");
+                if (debug) System.out.println("Type mismatch: " + inputOne + " with " + inputTwo + ".");
                 System.exit(-1);
                 return false;
             }
@@ -759,30 +781,79 @@ public class Main
         {
             return true;
         }
-    }
+    }*/
+
     public boolean compareType (Token left, Token right)
     {
+
         Boolean output=false;
         if (left==null)
         {
+
             reject("left operator is null");
         }
-        if (right.getAssignedType()==null)
+
+        if (right==null)
         {
             return true;
         }
+
+
+        System.out.print("comparing "+left.toString()+" and "+right.toString()+"\n");
+
         if (left.getAssignedType()==null)
         {
-            reject("left operator type is null\nLeft: \n"+left.toString()+"\n");
+            if (!(left.getType().equals("id")))
+            {
+                if(!right.getType().equals("id"))
+                {
+                    if (left.getType().equals(right.getType()))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        reject("type mismatch between "+left.getLexum()+" and "+right.getLexum());
+                    }
+                }
+                else
+                {
+                    if (left.getType().equals(right.getAssignedType()))
+                    {
+                        return true;
+
+                    }
+                    else
+                    {
+                        reject("type mismatch between "+left.getLexum()+" and "+right.getLexum());
+                    }
+                }
+            }
+            else {
+                reject("left operator type is null\nLeft: \n" + left.toString() + "\n");
+            }
         }
+        else
         if (right.getAssignedType()==null)
         {
-            reject("right operator type is null\nRight: \n" +
-                    right.toString()+"\n");
+            if (left.getAssignedType().equals(right.getType()))
+            {
+                output=true;
+                return output;
+            }
+            else {
+                reject("type mismmatch between "+left.getLexum()+" and "+right.getLexum());
+            }
         }
+        else
         if (left.getAssignedType().equals(right.getAssignedType()))
         {
-            output=true;
+
+            return true;
+        }
+        else
+        {
+            reject("type mismmatch between "+left.getLexum()+" and "+right.getLexum());
         }
         return output;
 
@@ -837,10 +908,11 @@ public class Main
 
     public void error(String expected)
     {
-        System.out.println("Error "+expected+" expected. \n Have: \"" +
-                tokens.get(tokenCounter).getLexum()+
-                "\"\n Of type: "+tokens.get(tokenCounter).getType()+
-                "\n on Token # "+tokenCounter+"\n");
+            System.out.println("Error " + expected + " expected. \n Have: \"" +
+                    tokens.get(tokenCounter).getLexum() +
+                    "\"\n Of type: " + tokens.get(tokenCounter).getType() +
+                    "\n on Token # " + tokenCounter + "\n");
+
         System.exit(-1);
     }
 
@@ -867,6 +939,7 @@ public class Main
     public Token checkToken(String lexum)
     {
         Token output;
+
         output=findToken(lexum);
         if (output==null)
         {
@@ -876,6 +949,11 @@ public class Main
     }
     public Token checkToken(Token checkingToken)
     {
+        if (!checkingToken.getType().equals("id"))
+        {
+            checkingToken.assignedType=checkingToken.getType();
+            return checkingToken;
+        }
         Token output;
         output=findToken(checkingToken.getLexum());
 
@@ -891,18 +969,19 @@ public class Main
     }
     public void reject(String message)
     {
-        System.out.print("REJECT\n");
+
         System.out.print(message+"\n");
-        printSymbolTabel();
+        //printSymbolTabel();
+        System.out.print("REJECT\n");
         System.exit(-1);
     }
     public void printSymbolTabel()
     {
-        System.out.println("SymbolTabel:");
+        System.out.println("SymbolTabel: \n");
         for (int i=0; i<symbolTabel.size(); i++)
         {
             System.out.println("Scope:"+i);
-            System.out.print(symbolTabel.get(i).toString());
+            System.out.print(symbolTabel.get(i).toString()+"\n");
 
 
         }
@@ -931,6 +1010,17 @@ public class Main
             {
                 symbolTabel.get(scopeDepth).put(input.getLexum(), checker);
             }
+        }
+    }
+    public Token getIntermediate (Token left, Token right)
+    {
+        if (right==null)
+        {
+            return left;
+        }
+        else
+        {
+            return right;
         }
     }
 
@@ -970,34 +1060,48 @@ public class Main
         if (debug){ System.out.print(theDeclared.getLexum()+" added to symbol table (in program) as a "+theDeclared.getAssignedType() +"\n");}
         moved to if match id
         */
-        declaration_list();//A
+        declaration_list(theDeclared);//A
         if (match("$"))
         {
-            System.out.println("Accepted");
-            System.exit(0);
+            if (theDeclared.getLexum().equals("main"))
+            {
+                System.out.println("ACCEPT1");
+                System.exit(0);
+            }
+            else
+            {
+                reject("Main is not the last function declared contrary to the requirement on pg 493");
+            }
         }
 
     }
-    public void declaration_list() //A->BA | @
+    public void declaration_list(Token theDeclared) //A->BA | @
     {
         if (debugMethods){
-            System.out.println("declaration list\n TokenCounter:"+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+            System.out.println("declaration list\n TokenCounter:"+tokenCounter+"Token: " + tokens.get(tokenCounter).toString());
         }
         //check for first of B
         if (look("int")||look("void")||look("float"))//First of B {d b n}
         {
-            declaration();  //B
-            declaration_list();//A
+            theDeclared=declaration();  //B
+            declaration_list(theDeclared);//A
         }
         else if (match("$"))
         {
-            System.out.println("Accepted TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter-1).toString());
-            System.exit(0);
+            if (theDeclared.getLexum().equals("main"))
+            {
+                System.out.println("ACCEPT1");
+                System.exit(0);
+            }
+            else
+            {
+                reject("Main is not the last function declared contrary to the requirement on pg 493");
+            }
         }
         else return;
     }
 
-    public void declaration()  //B->EaC
+    public Token declaration()  //B->EaC
     {
         String theType;
         Token checker=null;
@@ -1010,7 +1114,11 @@ public class Main
         if (matchType("id"))
             {
                 checker=(Token)symbolTabel.get(scopeDepth).put(theDeclared.getLexum(), theDeclared);
-                System.out.print(theDeclared.getLexum()+" added to symbol table (in declaration) as a: "+ theDeclared.getAssignedType()+".\n");
+                if (theDeclared.getAssignedType().equals("void"))
+                {
+                    reject("Illegal Void decleration of "+theDeclared.getLexum());
+                }
+                if (debugMethods) {System.out.print(theDeclared.getLexum()+" added to symbol table (in declaration) as a: "+ theDeclared.getAssignedType()+".\n");}
 
 
             }//a
@@ -1038,7 +1146,7 @@ public class Main
                     "allready declared when declaring "+theDeclared.toString());
             System.exit(-1);
         }
-
+        return theDeclared;
 
     }
 
@@ -1203,6 +1311,7 @@ public class Main
                 error (")");
             }
         }
+
     }
     public TypeValue compound_statement(Token theFunction) //G-> {JK}
     {
@@ -1334,6 +1443,13 @@ public class Main
         }
         else if (look("}"))//check follows of K
         {
+            if (!theFunction.getAssignedType().equals("void"))
+            {
+                if (theFunction.returned==false)
+                {
+                    reject("missing return statment in "+theFunction);
+                }
+            }
             return;
         }
         else {error("}");}
@@ -1362,6 +1478,8 @@ public class Main
         else if(look("return")) //first og P :return_statement
         {
             return_statement(theFunction);
+            theFunction.returned=true;
+
         }
         else{error ("statment ");}
 
@@ -1466,13 +1584,14 @@ public class Main
         }
         if (match(";"))
         {
-            if (theFunction.getAssignedType()==null||theFunction.getAssignedType().equals("void)"))
+            if (theFunction.getAssignedType()==null||theFunction.getAssignedType().equals("void"))
             {
                 return;
             }
             else
             {
                 System.out.print("REJECT\n Return without Parameter in function "+theFunction.getLexum()+" of return type "+ theFunction.getAssignedType()+"\n");
+                printSymbolTabel();
                 System.exit(-1);
 
             }
@@ -1481,24 +1600,37 @@ public class Main
         {
             Token returnValue;
             returnValue=expression();
+            if (returnValue.getType().equals("id"))
+            {
+                checkToken(returnValue);
+            }
+            else
+            {
+                if (theFunction.getAssignedType().equals(returnValue.getType()))
+                {
+                    if (match(";"))
+                    {return;}
+                }
+            }
+
             if (returnValue!=null&&returnValue.getAssignedType()!=null&&!returnValue.getAssignedType().equals(""))
             {
-                if (returnValue.type.equals(theFunction.getAssignedType()))
+                if (returnValue.getAssignedType().equals(theFunction.getAssignedType()))
                 {// this is the proper condition
                 }
                 else
                 {
-                    System.out.print("REJECT\n return value does not match return value type for function "+theFunction.getLexum()+" which is "+ theFunction.getAssignedType()+". \n" );
+                    reject("return value "+returnValue.getLexum()+" does not match return value type for function "+theFunction.getLexum()+" which is "+ theFunction.getAssignedType()+". \n" );
                 }
             }
             //Todo uncomment after finishing typevalue of expression
-            /*
+
             else
             {
                 System.out.print("REJECT \n return value has null type: this is probably a compiler error please email aaron.p.wagner@gmail.com with details");
                 System.exit(-1);
             }
-            */
+
 
             if (match(";"))
             {return;}
@@ -1529,6 +1661,7 @@ public class Main
             leftHandSide.setAssignedType(storedLHS.getAssignedType());
             output.type=storedLHS.getAssignedType();
             TypeValue modifier=new TypeValue();
+            if (debug) System.out.print("after look up "+leftHandSide.getLexum()+" is of type: "+leftHandSide.getAssignedType()+"\n");
 
             modifier=stemmed_expression(leftHandSide);//m
             if (modifier!=null&&modifier.type!=null&&modifier.type.contains("array"))
@@ -1605,7 +1738,12 @@ public class Main
             output=stemmed_variable(leftHandSide);  //8
             if (match("="))
             {
-                expression();
+                Token rightHandSide=expression();
+                if ((rightHandSide.getAssignedType()==null)&&(!rightHandSide.getType().equals("int")))
+                {
+                    reject ("Type missmatch in assignment between "+leftHandSide+" and "+rightHandSide+".");
+                }
+
             }
             else
             {
@@ -1618,7 +1756,13 @@ public class Main
         }
         else if (match("="))
         {
-            expression();
+            //expression();
+            Token rightHandSide=expression();
+            Boolean good=compareType(leftHandSide,rightHandSide);
+            if (!good)
+            {
+                reject ("Type missmatch in assignment between "+leftHandSide+" and "+rightHandSide+".");
+            }
         }
         else
         {
@@ -1641,7 +1785,8 @@ public class Main
             checkToken(leftHandSide);
             leftHandSide.setAssignedType(checkToken(leftHandSide).getAssignedType());
 
-            stemmed_variable(leftHandSide);
+            TypeValue modifier=stemmed_variable(leftHandSide);
+            //modify(leftHandSide,modifier);
         }
         else{error("id");}
     }
@@ -1656,12 +1801,35 @@ public class Main
         {
             Token checker;
             checker=expression(); //Q
-            if (match("]"))
+            if (checker==null)
             {
-
-                return output;
+                //skip the rest of this stuff.
             }
-            else {error("]");}
+            else if (checker.getType().equals("int")||(checker.getAssignedType()!=null&&checker.getAssignedType().equals("int")))
+            {
+                output.type = "array";
+                if (leftHandSide.getAssignedType().contains(" array"))
+                {
+                    String type = leftHandSide.getAssignedType();
+                    type = type.substring(0, type.length() - 5).trim();
+                    leftHandSide.setAssignedType(type);
+                    if (debug)
+                        {
+                            System.out.print("\n this " + leftHandSide.getLexum() + "is a" + leftHandSide.getAssignedType());
+                        }
+                }
+
+            }
+            else
+            {
+                reject(checker.getLexum()+" is of an invalid type to be assigned as an element to "+leftHandSide.getLexum());
+            }
+        if (match("]"))
+        {
+
+            return output;
+        }
+        else {error("]");}
         }
         else if (look("=")||look("*")||look("/")||look("+")||look("-")||look("!")||look(">")||look("<")||look("]")||look(";")||look(")")||look(",")||look("(")||look("<=")||look(">=")||look("==")|look("!="))//check follows of 8
         {
@@ -1700,9 +1868,10 @@ public class Main
             System.out.println("additive expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         term(leftHandSide);
-        additive_expression_prime(leftHandSide);
+        Token rightHandside=additive_expression_prime(leftHandSide);
+        compareType(leftHandSide,rightHandside);
     }
-    public void additive_expression_prime(Token leftHandSide) //u->WXu |@
+    public Token additive_expression_prime(Token leftHandSide) //u->WXu |@
     {
         if (debugMethods){
             System.out.println("additive expression prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1710,14 +1879,31 @@ public class Main
         if (look("+")||look("-"))
         {
             addop(leftHandSide);
-            term(leftHandSide);
-            additive_expression_prime(leftHandSide);
+            Token rightHandSide=term(leftHandSide);
+            compareType(leftHandSide,rightHandSide);
+            Token intermediate=getIntermediate(leftHandSide,rightHandSide);
+            Token next;
+            if (compareType(leftHandSide,rightHandSide))
+            {
+                if (leftHandSide!=null&&rightHandSide!=null)
+                {
+                    if (debug) System.out.print("\n Good addition or subtraction"+leftHandSide.toString()+rightHandSide.toString());
+                }
+            }
+            else
+            {
+                reject("Cannot add/subtract"+rightHandSide.getLexum()+" of type "+rightHandSide.getAssignedType()+" to/from "+rightHandSide.getLexum()+" of type "+rightHandSide.getAssignedType()+"."  );
+            }
+            next=additive_expression_prime(intermediate);
+            return getIntermediate(intermediate,next);
+
         }
         else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows of u
         {
-            return;
+            return null;
         }
         else {error("right hand of additive expression or end of expression");}
+        return null;
     }
     public void relop(Token leftHandSide) //V -> <x | >x | == | !=
     {
@@ -1752,17 +1938,25 @@ public class Main
         {return;}
             else {error("additive operand");}
     }
-    public void term(Token leftHandSide) //X-> Zy
+    public Token term(Token leftHandSide) //X-> Zy
     {
+        Token rightHandSide;
+        Token intermediate;
         if (debugMethods){
             System.out.println("term\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
-        factor(leftHandSide);
-        term_prime(leftHandSide);
+
+        rightHandSide=factor(leftHandSide);
+        compareType(leftHandSide,rightHandSide);
+        rightHandSide=term_prime(leftHandSide);
+        compareType(leftHandSide,rightHandSide);
+        //intermediate=getIntermediate(leftHandSide,rightHandSide);
+        return rightHandSide;
     }
-    public void term_prime(Token leftHandSide) //y-> YZy | @
+    public Token term_prime(Token leftHandSide) //y-> YZy | @
     {
         Token rightHandSide=null;
+        Token intermediate=null;
         if (debugMethods) {
             System.out.println("term prime\n TokenCounter: " + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         }
@@ -1770,6 +1964,7 @@ public class Main
         {
             mulop(leftHandSide);  //this will need to return an indcator of multiply or divide for intermediate code generation
             rightHandSide=factor(leftHandSide); //Z
+
             if (compareType(leftHandSide, rightHandSide))
             {
                 System.out.print("\n Good multiplication or division. \n");
@@ -1780,16 +1975,20 @@ public class Main
 
                 reject("multiplication operation between different types have "+leftHandSide.getLexum()+" of type "+leftHandSide.getAssignedType() +" and "+rightHandSide.getLexum()+" of type "+ rightHandSide.getAssignedType()+".");
             }
-            term_prime(leftHandSide);
+            //intermediate=getIntermediate(leftHandSide,rightHandSide);
+            term_prime(rightHandSide);
+
+            return rightHandSide;
         }
 
         else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows y
         {
-            return ;
+            return rightHandSide;
         }
         else
         {error ("operand, ',', or ';' ");}
-        return ;
+        //for intermediate code the return value will be the product of a multop or the left hand side for a null right hand side
+        return rightHandSide;
     }
     public void mulop(Token leftHandSide) //Y-> * | /
     {
@@ -1837,19 +2036,55 @@ public class Main
             if (debug){System.out.print(rightHandSide.toString());}
             variable_call_discriminator(rightHandSide);
         }
-        else if (matchType("num"))
-        {
-            rightHandSide=tokens.get(tokenCounter-1);
+        else if (matchType("num")) {
+
+            rightHandSide = tokens.get(tokenCounter - 1);
+            if (leftHandSide.getType().equals("id")) {
+                if (!leftHandSide.getAssignedType().equals("num")) {
+                    reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
+                }
+            }
+            else
+            {
+                if (!rightHandSide.getType().equals(leftHandSide.getType()))
+                {
+                    reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
+                }
+            }
             return rightHandSide;
         }
         else if (matchType("int"))
         {
             rightHandSide=tokens.get(tokenCounter-1);
+            if (leftHandSide.getType().equals("id")) {
+                if (!leftHandSide.getAssignedType().equals("int")) {
+                    reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
+                }
+            }
+            else
+            {
+                if (!rightHandSide.getType().equals(leftHandSide.getType()))
+                {
+                    reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
+                }
+            }
             return rightHandSide;
         }
         else if (matchType("float"))
         {
             rightHandSide=tokens.get(tokenCounter-1);
+            if (leftHandSide.getType().equals("id")) {
+                if (!leftHandSide.getAssignedType().equals("float")) {
+                    reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
+                }
+            }
+            else
+            {
+                if (!rightHandSide.getType().equals(leftHandSide.getType()))
+                {
+                    reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
+                }
+            }
             return rightHandSide;
         }
         else {error (" '(expression)', variable, call or number type ");}
@@ -1868,7 +2103,10 @@ public class Main
         if (match("(")) {
             args(leftHandSide);
             if (match(")"))
-            {return;}
+            {
+                System.out.print("\n out of args \n");
+                return;
+            }
             else{error(")");}
         }
         //first of 8 and follows of 8
@@ -1896,12 +2134,16 @@ public class Main
             else
             {
                 reject("Function: "+callingFunction.getLexum()+" not defined in symbol table.");
+
             }
             if (match("("))
             {
                 args(leftHandSide);
                 if (match(")"))
-                {return;}
+                {
+                    if (debug)
+                    {System.out.print("recognized end of args");}
+                    return;}
                 else {error(")");}
             }
             else {error("( ");}
@@ -1916,39 +2158,114 @@ public class Main
     //will work from call register
     public void args(Token leftHandSide) //2 -> 3 | @
     {
+        ArrayList parameterTypes=checkToken(leftHandSide).getParameterList();
         if (debugMethods){
-            System.out.println("arguments\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+            System.out.println("args\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
       if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))
       {
           args_list(leftHandSide);
       }
-        else if (look(")"))//follows of 2
-      {return;}
-        else {error("arguments");}
+      if (look(")"))//follows of 2
+      {
+          if (debug) System.out.print("\n Comaring parameters and args\n");
+
+          if ((parameterTypes.size()==1)&&parameterTypes.get(0).equals("void"))
+          {
+              System.out.print("\nVoid parameters\n");
+              return;
+          }
+          if (!(parameterTypes.size()==leftHandSide.getParameterList().size()))
+          {
+
+              reject("Calling function "+leftHandSide.getLexum()+" requires "+parameterTypes.size()+" arguments. Have "+leftHandSide.getParameterList().size()+" arguments");
+          }
+          for (int i=0; i<parameterTypes.size(); i++)
+          {
+              if (debugMethods)System.out.print("Comparing parameters and arguments\n");
+              if (!parameterTypes.get(i).equals(leftHandSide.getParameterList().get(i)))
+              {
+                  int label=i+1;
+                  reject("Type mismatch on parameter "+label+" when calling function "+leftHandSide.getLexum()+" have "+leftHandSide.getParameterList().get(i)+
+                          " require "+ parameterTypes.get(i)+".");
+              }
+
+
+          }
+
+              if (debugMethods)
+              {
+                  System.out.print("Parameters: ");
+                  for (int i=0; i<parameterTypes.size(); i++)
+                  {
+                      System.out.print (parameterTypes.get(i)+", ");
+                  }
+                  System.out.print("Arguments: ");
+                  for (int i=0; i<leftHandSide.getParameterList().size(); i++)
+                  {
+                      System.out.print (leftHandSide.getParameterList().get(i)+", ");
+                  }
+              }
+          System.out.print("\n exiting args");
+      }
+        else {error(")");}
     }
     public void args_list(Token leftHandSide) //3-> Qv
     {
+        String type;
+        Token argument;
         if (debugMethods){
             System.out.println("arguments list\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
-        expression();
+        argument=checkToken(expression());//Q
+
+        if (debug)System.out.print("Expression returned the argument "+argument.toString());
+
+        type=argument.getAssignedType();
+        if (argument.getAssignedType()==null)
+        {
+            type=argument.getType();
+
+        }
+        leftHandSide.parameterList.add(type);
+        if (debug) System.out.println("\nin Args  argument type is " + type + "\n");
         if (look(")"))
-        {return;}
+        {
+            if (debug)System.out.print("in args list returning to args");
+            return;
+        }
         else {args_list_prime(leftHandSide);}
+        if (look(")"))
+        {
+            if (debug)System.out.print("in args list returning to args after prime\n");
+            return;
+        }
+        else {
+            error (")");
+        }
     }
     public void args_list_prime(Token leftHandSide) //v-> ,Qv | @
     {
+        String type;
         if (debugMethods){
             System.out.println("arguments list prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match(","))
         {
-         expression();
+            Token argument;
+          argument=expression();
+            type=argument.getAssignedType();
+            if (type==null)
+            {
+                type=argument.getType();
+            }
+            leftHandSide.parameterList.add(type);
+            if (debug) System.out.println("\nin Args prime  argument type is " + type + "\n");
          args_list_prime(leftHandSide);
         }
         else if (look(")"))//follows of v
         {return;}
+
         else {error(",");}
 
     }

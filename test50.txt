@@ -1,16 +1,7 @@
-/* test15  testing if extra letter after number failure*/
-
-int z[6];
-
-int noclue(int z[])
-{
-	int s;
-	if(z[1] <= 7a)
-		return z;
-	while(r>z)
-	{if (x==2)
-			return x;
-	}
-
-
-}
+void main(void)    /* good */
+ {
+ 	int q;	
+ 	int b;
+         b = b + q;
+    return;
+ }

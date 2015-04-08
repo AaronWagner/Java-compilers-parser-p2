@@ -1,17 +1,10 @@
-/* test51  testing if comparison extra letter failure*/
 
-
-int z[6];
-
-int noclue(int z[])
-{
-	int s;
-	if(z[1] >b= 7)		// = is token 26
-		return z;
-	while(r>z)
-	{if (x==2)
-			return x;
-	}
-
-
-}
+ // test 51, should pass
+ int  main(void) /* good nested */
+ {
+    int x;
+    {
+       int x;
+    }
+    return x;
+ }

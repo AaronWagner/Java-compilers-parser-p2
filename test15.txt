@@ -1,16 +1,41 @@
-/* test15  testing array parameter accept*/
 
-int q[6];
+/* test for basic functionality of proj 3 - fail */
+/* test 15 - test function param mismatch */
 
-int noclue(int z[])
+int x;
+int y;
+
+
+int my ( float b, int c)
 {
-	int s;
-	if(z[1]=7)
-		return z;
-	while(r>z)
-	{if (x==2)
-			return x;
+	int z;
+	
+	z = z+c;
+
+	return z+c;
+}
+
+
+void main( int x, int y )
+{
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(1.2, 2.5);
+	
 	}
 
+}
+
+int something( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
 
 }

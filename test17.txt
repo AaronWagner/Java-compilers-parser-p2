@@ -1,16 +1,22 @@
-/* test17  testing array parameter missing [ */
 
-int q[6];
+/* test for basic funtionality of proj 3 - should fail */
+/* test 17  test for no return  */
 
-int noclue(int z[])
+int x;
+int y;
+
+void main ( int x, int y )
 {
-	int s;
-	if(z1]=7)
-		return z;
-	while(r>z)
-	{if (x==2)
-			return x;
-	}
+	int z;
+	
+	z = x + y;
 
+}
 
+int my ( float b, int u)
+{
+
+	int z;
+
+	z = z+y;
 }

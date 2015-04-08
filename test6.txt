@@ -1,9 +1,32 @@
-<><=>=!!===/=
-//this is a comment
-not a/**/ comment
 
-/*this 
-is
-a       multil**ine */ comment
+/* test for basic functionality of proj 3 - pass */
+/* test 6 - calling a method, scope check of function */
 
-/*this is/* a nested */ comment*/ ponies!
+int x;
+int y;
+
+
+int my ( float b, int c)
+{
+	int z;
+	
+	z = z+c;
+
+	return z;
+}
+
+
+void main ( int x, int y )
+{
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(1.2, 2);
+	
+	}
+
+}
+

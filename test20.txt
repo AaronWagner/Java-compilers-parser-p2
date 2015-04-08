@@ -1,16 +1,42 @@
-/* test20  testing float fail + precedes int*/
 
-int q[6];
+/* test for basic functionality of proj 3 - fail */
+/* test 20 - return wrong type ID */
 
-int noclue(int z[])
+int x;
+int y;
+
+
+int my ( float b, int c)
 {
-	int s;
-	if(z[1]=7)
-		return z;
-	while(r>z)
-	{if (x==2)
-			return +3.4E6;
+	int z;
+	
+	z = z+c;
+
+	return b;
+}
+
+
+void main( int x, int y )
+{
+	float q;
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(q,z);
+	
 	}
 
+}
+
+int something( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
 
 }

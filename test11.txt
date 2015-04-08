@@ -1,14 +1,41 @@
-/* test11  testing {letter separation accept*/
+
+/* test for basic functionality of proj 3 - fail */
+/* test 11 - test function param mismatch */
+
+int x;
+int y;
 
 
-float noclue(int z, float r)
+int my ( float b, int c)
 {
-	if(z=7)
-		return z;
-	while(r>z)
-	{if (x==2)
-			return x;
+	int z;
+	
+	z = z+c;
+
+	return z+c;
+}
+
+
+void main( int x, int y )
+{
+	int z;
+	x=1;
+	y=2;
+	z = x + y;
+	if (z < 5)
+	{
+		z=my(1.2, 2.5);
+	
 	}
 
+}
+
+int something( int z, int q)
+{
+	int why;
+
+	why = z+q;
+
+	return why;
 
 }
