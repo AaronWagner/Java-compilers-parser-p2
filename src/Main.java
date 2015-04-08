@@ -159,8 +159,8 @@ public class Main
         myMain.depth=0;
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
-        myMain.debug =true;
-        myMain.debugMethods=true;
+        myMain.debug =false;
+        myMain.debugMethods=false;
         for (int i=0; i<myMain.inputArray.length; i++)
         {
             if (myMain.debug) System.out.print("I="+i+":~"+myMain.inputArray[i]);
@@ -970,7 +970,7 @@ public class Main
     public void reject(String message)
     {
 
-        System.out.print(message+"\n");
+        if (debug){System.out.print(message+"\n");}
         //printSymbolTabel();
         System.out.print("REJECT\n");
         System.exit(-1);
@@ -1065,7 +1065,7 @@ public class Main
         {
             if (theDeclared.getLexum().equals("main"))
             {
-                System.out.println("ACCEPT1");
+                System.out.println("ACCEPT");
                 System.exit(0);
             }
             else
@@ -1090,7 +1090,7 @@ public class Main
         {
             if (theDeclared.getLexum().equals("main"))
             {
-                System.out.println("ACCEPT1");
+                System.out.println("ACCEPT");
                 System.exit(0);
             }
             else

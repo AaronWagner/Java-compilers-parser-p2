@@ -5,34 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d62f8ae7-75d1-403a-bea3-0eb69d23abc7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/P2/Main$Token.class" afterPath="$PROJECT_DIR$/out/production/P2/Main$Token.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/P2/Main.class" afterPath="$PROJECT_DIR$/out/production/P2/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Documentation.txt" afterPath="$PROJECT_DIR$/Documentation.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test1.txt" afterPath="$PROJECT_DIR$/test1.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test10.txt" afterPath="$PROJECT_DIR$/test10.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test11.txt" afterPath="$PROJECT_DIR$/test11.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test12.txt" afterPath="$PROJECT_DIR$/test12.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test13.txt" afterPath="$PROJECT_DIR$/test13.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test14.txt" afterPath="$PROJECT_DIR$/test14.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test15.txt" afterPath="$PROJECT_DIR$/test15.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test16.txt" afterPath="$PROJECT_DIR$/test16.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test17.txt" afterPath="$PROJECT_DIR$/test17.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test18.txt" afterPath="$PROJECT_DIR$/test18.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test19.txt" afterPath="$PROJECT_DIR$/test19.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test2.txt" afterPath="$PROJECT_DIR$/test2.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test20.txt" afterPath="$PROJECT_DIR$/test20.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test21.txt" afterPath="$PROJECT_DIR$/test21.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test22.txt" afterPath="$PROJECT_DIR$/test22.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test3.txt" afterPath="$PROJECT_DIR$/test3.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test4.txt" afterPath="$PROJECT_DIR$/test4.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test5.txt" afterPath="$PROJECT_DIR$/test5.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test50.txt" afterPath="$PROJECT_DIR$/test50.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test51.txt" afterPath="$PROJECT_DIR$/test51.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test6.txt" afterPath="$PROJECT_DIR$/test6.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test7.txt" afterPath="$PROJECT_DIR$/test7.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test8.txt" afterPath="$PROJECT_DIR$/test8.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test9.txt" afterPath="$PROJECT_DIR$/test9.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="P2.iws" />
@@ -61,8 +35,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43589744" vertical-offset="16575" max-vertical-offset="38216">
-              <caret line="1012" column="8" selection-start-line="1012" selection-start-column="8" selection-end-line="1012" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.52014655" vertical-offset="15872" max-vertical-offset="38216">
+              <caret line="972" column="51" selection-start-line="972" selection-start-column="51" selection-end-line="972" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -364,7 +338,13 @@
       <option name="project" value="LOCAL" />
       <updated>1428086984900</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Passes all tests except same scope parameters turnin.">
+      <created>1428525235189</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1428525235189</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -449,7 +429,8 @@
     <MESSAGE value="patter: public TypeValue method(Token leftHandSide)&#10;next step need to populate expression type value returns" />
     <MESSAGE value="pattern refactoring complete now need to add LHS to RHS comparison logic" />
     <MESSAGE value="Multiplication operations work!&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Multiplication operations work!&#10;" />
+    <MESSAGE value="Passes all tests except same scope parameters turnin." />
+    <option name="LAST_COMMIT_MESSAGE" value="Passes all tests except same scope parameters turnin." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -743,8 +724,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43589744" vertical-offset="16575" max-vertical-offset="38216">
-          <caret line="1012" column="8" selection-start-line="1012" selection-start-column="8" selection-end-line="1012" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.52014655" vertical-offset="15872" max-vertical-offset="38216">
+          <caret line="972" column="51" selection-start-line="972" selection-start-column="51" selection-end-line="972" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
