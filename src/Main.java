@@ -49,6 +49,12 @@ public class Main
     Token callRegister;
     Boolean debug;
     Boolean debugMethods;
+    ArrayList<String> outputFile;
+    ArrayList<String> backpatchedOutputFile;
+    int lineNumber;
+    boolean backpatchRegister;
+    String backPatchLabel;
+    int backpatchIndex;
 
     class Token
     {
@@ -180,6 +186,9 @@ public class Main
         myMain.symbolTabel.add(new HashMap<String, Token>());
         myMain.makeEndToken();
         myMain.program();
+        System.out.print("File before backpatching\n"+myMain.outputFile);
+        myMain.backpatch();
+
         /*Token endToken=new Token("$")
         myMain.tokens.add();
         */
@@ -606,6 +615,7 @@ public class Main
         return endResult;
     }
 */
+    public void backpatch(){}
 
     public boolean checkTokenForKeyWord(String input){
         return input.matches("\\B[else][if][int][return][void][while][float]\\B");
@@ -987,7 +997,30 @@ public class Main
         }
     }
 
+    public void addLine (String operator, String param1, String param2, String target)
+    {
 
+        if (outputFile==null)
+        {
+            outputFile=new ArrayList<String>();
+        }
+        if (!backpatchRegister) {
+            outputFile.add(lineNumber + "\t" + operator + "\t" + param1 + "\t" + param2 + "\t" + target);
+        }
+        else
+        {
+            outputFile.add(lineNumber + "\t" + operator + "\t" + param1 + "\t" + param2 + "\t" + target + "\t" +backPatchLabel);
+        }
+
+    }
+    public void addLine (String operator, String param1, String param2, String target, String backpatchLabel)
+    {
+        if (outputFile==null)
+        {
+            outputFile=new ArrayList<String>();
+        }
+        outputFile.add(lineNumber+"\t"+operator+"\t"+param1+"\t"+param2+"\t"+target);
+    }
     public void storeToken(Token input)
     {
         Token checker=null;
@@ -1222,6 +1255,9 @@ public class Main
 
     public void declaration_prime(Token theFunction) //0 -> ,I0|@
     {
+        backpatchRegister=false;
+        backPatchLabel="";
+
         if (debugMethods){
             System.out.println("decleartion prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
