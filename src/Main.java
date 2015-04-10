@@ -999,7 +999,7 @@ public class Main
 
     public void addLine (String operator, String param1, String param2, String target)
     {
-
+        lineNumber++;
         if (outputFile==null)
         {
             outputFile=new ArrayList<String>();
@@ -1015,11 +1015,12 @@ public class Main
     }
     public void addLine (String operator, String param1, String param2, String target, String backpatchLabel)
     {
+        lineNumber++;
         if (outputFile==null)
         {
             outputFile=new ArrayList<String>();
         }
-        outputFile.add(lineNumber+"\t"+operator+"\t"+param1+"\t"+param2+"\t"+target);
+        outputFile.add(lineNumber+"\t"+operator+"\t"+param1+"\t"+param2+"\t"+target+"\t"+backPatchLabel);
     }
     public void storeToken(Token input)
     {
@@ -1056,6 +1057,49 @@ public class Main
             return right;
         }
     }
+    public void allocate (Token theDeclared)
+    {
+        if (!(theDeclared.getAssignedType()!=null)&&!(theDeclared.getAssignedType().equals("void")))
+            //should not need to check for a void allocation
+        {
+            if (theDeclared.getAssignedType().equals("int"))
+            {
+                addLine("ali", "4", "", theDeclared.getLexum());
+            }
+            else if(theDeclared.getAssignedType().equals("float"))
+            {
+                addLine("alf", "4", "", theDeclared.getLexum());
+            }
+            else if (theDeclared.getAssignedType().contains("array"))
+            {
+                int size = theDeclared.length;
+                if (size==0)
+                {
+                    reject(theDeclared.getLexum()+" declared as "+theDeclared.getAssignedType()+"[] of size zero");
+                }
+                if (theDeclared.getAssignedType().contains("int"))
+                {
+                    addLine("ali", Integer.toString((size*4)), "", theDeclared.getLexum());
+                }
+                else if (theDeclared.getAssignedType().contains("float"))
+                {
+                    addLine("alf", Integer.toString((size*4)), "", theDeclared.getLexum());
+                }
+            }
+
+
+        }
+        else if (theDeclared.getAssignedType().equals("void"))
+        {
+            reject("Why did "+theDeclared.getLexum()+" declared as a void? get past symantic analysis" );
+            //check for semanticlly this should be redundant
+        }
+        else
+        {
+            //if a variable value is declared
+            reject("Why did "+theDeclared.getLexum()+" fall into assignment without an assigned type?" );
+        }
+    }
 
 // This starts the recursive decent methods
     /////////////////////////////////////////////////////////////////////////////////
@@ -1063,6 +1107,8 @@ public class Main
     {
        // System.out.print("DECENDING \n***********************************************");
         //System.out.println("program\n TokenCounter:" + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
+       ///////////////////////////////////////////////////////////////////////////
+       //Decent initilization
         scopeDepth=0;
         Token input=new Token("input");
         input.setAssignedType("int");
@@ -1075,6 +1121,8 @@ public class Main
         scopeDepth++;
         symbolTabel.add(new HashMap<String,Token>());
         String type;
+        //End initalization
+        /////////////////////////////////////////////////////////////////////////////
         type=type_specifier();//E
         Token theDeclared=tokens.get(tokenCounter);
 
@@ -1185,6 +1233,7 @@ public class Main
 
     public TypeValue stemmed_decleration(Token theFunction)  //C->4 |(F)G
     {
+
         TypeValue output=new TypeValue();
         if (debugMethods) {
             System.out.println("stemmed declaration\n TokenCounter: " + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
@@ -1196,12 +1245,15 @@ public class Main
             {
                 theFunction.setLength((int) output.value);
             }
+            allocate(theFunction);//generates a line
         }
         else if(match("("))//(F)G
         {
+
             parameters(theFunction);//F
             if (match(")"))
             {
+                       //todouncomment after merg addLine("func", theFunction.getLexum(), theFunction.getAssignedType(), Integer.toString())
                 compound_statement(theFunction); //does not need parameters
             }
             else {error(")");}
@@ -1297,19 +1349,22 @@ public class Main
     public void parameters(Token theFunction)  //F-> ED
     {
 
-        if (debugMethods){
+        if (debugMethods)
+        {
             System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         String theType;
         theType=type_specifier();
         theFunction.parameterList.add(theType);
         //Todo fun decleration needs to return additional parameters to include in output
+
         fun_declaration(theType, theFunction);
 
     }
     public void fun_declaration(String inputtype, Token theFunction)  //D->a50 | @
     {
-        if (debugMethods){
+        if (debugMethods)
+        {
             System.out.println("function declaration\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (matchType("id"))//a
@@ -1419,6 +1474,7 @@ public class Main
     }
     public void parameter(Token theFunction) //I-> Ea5
     {
+        Boolean matched=false;
         String theType= new String();
         if (debugMethods){
             System.out.println("parameter\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1426,6 +1482,7 @@ public class Main
         theType=type_specifier();   //E
         if (matchType("id"))//a
         {
+           matched=true;
             Token theParameter=tokens.get(tokenCounter-1);
             theFunction.parameterList.add(theType);
             theParameter.setAssignedType(theType);
@@ -1440,11 +1497,18 @@ public class Main
                 theParameter.setLength((int)modifiers.value);
 
             }
-            if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theType+" added to function "+theFunction.getLexum()+".\n");}
+            if (debug)
+            {
+                System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theType+" added to function "+theFunction.getLexum()+".\n");
+            }
             symbolTabel.get(symbolTabel.size()-1).put(theParameter.getLexum(), theParameter);
 
         }
-        else {error("parameter" );}
+        else
+        {
+            error("parameter" );
+        }
+
     }
     public void local_declaration() //J->BJ | @
     {
