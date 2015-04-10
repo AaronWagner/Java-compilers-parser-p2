@@ -1,0 +1,6 @@
+int main(void){
+	int i;
+	int a[30];
+	i = 3 + a[10];	//Test Accepts when adding integer with integer array value
+	return 1;
+}

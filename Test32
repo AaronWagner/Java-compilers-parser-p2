@@ -1,0 +1,11 @@
+int main(void){
+	int total;
+	int first;
+	int second;
+	
+	first = 4;
+	second = 5;
+	total = first + second;		//Tests int id + int id
+	return 1;
+	
+}

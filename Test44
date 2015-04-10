@@ -1,0 +1,7 @@
+float f;
+
+int main(void){
+	int f;		//Test multiple id declarations of different types at different scopes
+	f = 3;
+	return 1;
+}

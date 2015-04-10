@@ -1,0 +1,5 @@
+int main(void){
+	int i;
+	i = 3 + 3.4;		//Test Reject on int + float
+	return i;
+}

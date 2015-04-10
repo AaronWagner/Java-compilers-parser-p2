@@ -1,0 +1,5 @@
+int main(void){
+	float f;
+	f = 3.4 + 5.5;		//Test Accept on float + float;
+	return 1;
+}

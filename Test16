@@ -1,0 +1,5 @@
+int main(void){
+	float f;
+	f = 3;		//Test Reject when assigning int to float
+	return 1;
+}

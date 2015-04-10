@@ -1,0 +1,9 @@
+int main(void){
+	{
+		int i;
+	}
+	{
+		int i;		//Test compound statements are at unique symbol tables
+	}
+	return 1;
+}

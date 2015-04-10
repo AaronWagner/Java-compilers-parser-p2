@@ -1,0 +1,27 @@
+#!/bin/bash
+c=1
+location="Tests/Test"
+success=0
+failer=0
+FILE=$1
+echo "FAILED FILES" > "Tests/Failed"
+while read line; do
+	echo "$c"
+	results=$(java p3 $location$c)
+	if [ "$results" == "$line" ]
+	then
+		echo "SUCCESS"
+		read line
+		echo "$line"
+		success=$(( $success + 1 ))
+	else
+		echo "FAILED"
+		read line
+		echo "$line"
+		echo "$c - $line - OUTPUT:  $results" >> "Tests/Failed"
+		failer=$(( $failer + 1 ))
+	fi
+	c=$(( $c + 1 ))
+done < $FILE
+c=$(( $c - 1 ))
+echo "TOTAL CORRECT: $success / $c"

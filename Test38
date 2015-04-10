@@ -1,0 +1,5 @@
+int main(void){
+	int a[30];
+	a[3.4] = 3;		//Test rejects when selecting float index on left of equation
+	return 1;
+}

@@ -1,0 +1,4 @@
+int main(int a){
+	int a;		//Test params and declarations at same scope
+	return 1;
+}

@@ -1,0 +1,5 @@
+int a;
+int b;
+int main(int a, int b){		//Test params are at different scope than global
+	return 1;
+}

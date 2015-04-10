@@ -1,0 +1,29 @@
+1. follow items for LR(1) parser (item set 0 and all item sets that are
+generated from item set 0 in 1 move.
+
+2. build LALR(1) parser and show a parse.
+
+3. eliminate left recursion from the following grammar.
+
+4. determine if the following grammar is SLR(1).
+
+5. list the intermediate code that would be generated.
+
+6. given the following code, what is printed under A) dynamic scope B) static
+scope
+
+7. what is printed if A) call by reference, B) call by value C)
+copy-restore, C) call by name
+
+8. run time environments (stack based vs non stack based)
+
+9. grammar specification for semantic analysis
+
+10. issues associated with binding
+
+11. semantic analysis to determine equivalence
+
+12. issues associated with control links and access links in activation
+records.
+
+13. Garbage collection.

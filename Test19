@@ -1,0 +1,5 @@
+int main(void){
+	int a[30];
+	a[10] = 3.4;	//Test rejects on float assignment to integer array
+	return 1;
+}

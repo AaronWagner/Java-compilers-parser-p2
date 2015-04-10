@@ -1,0 +1,13 @@
+int main(void){
+
+	float total;
+	float first;
+	float second;
+	
+	first = 3.4;
+	second = 4.5;
+
+	total = first + second;		//Tests float id + float id
+	return 1;
+	
+}

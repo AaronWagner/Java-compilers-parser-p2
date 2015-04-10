@@ -1,0 +1,13 @@
+int main(void){
+
+	int total;
+	int first;
+	float second;
+
+	first = 3;
+	second = 3.4;
+
+	total =	first + second;	//Test reject on int id + float id
+	
+	return 1;
+}

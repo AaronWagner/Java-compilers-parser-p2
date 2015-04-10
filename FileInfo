@@ -1,0 +1,114 @@
+ACCEPT
+Test Return type present
+ACCEPT
+Test Return type present
+REJECT
+Test Return type present
+ACCEPT
+Test no return statement on void
+REJECT
+Test no return statement on void
+ACCEPT
+Test return int type on int method
+ACCEPT
+Test return float type on float method
+REJECT
+Test return float type on int method
+REJECT
+Test return int type on float method
+ACCEPT
+Test adding int + int
+ACCEPT
+Test adding int + int + int
+REJECT
+Test adding int + float
+REJECT
+Test adding float + int
+ACCEPT
+Test float = float + float
+REJECT
+Test float = int
+REJECT
+Test int = float
+ACCEPT
+Test int[] = int
+ACCEPT
+Test float[] = float
+REJECT
+Test int[] = float
+REJECT
+Test float[] = int
+ACCEPT
+Test int = int + int[]
+ACCEPT
+Test float = float + float[]
+REJECT
+Test int = int + float[]
+ACCEPT
+Test int * int
+ACCEPT
+Test float * float
+REJECT
+Test reject on int * float
+REJECT
+Test reject on float * int
+ACCEPT
+Test (int + int) + int
+ACCEPT
+Test (float + float) + float
+REJECT
+Test (float) + int
+REJECT
+Test (int) + float
+ACCEPT
+Test int id + int id
+ACCEPT
+Test float id + float id
+REJECT
+Test reject on int id + float id
+REJECT
+Test reject on float id + int id
+REJECT
+Test reject on declaration of void id
+ACCEPT
+Test calling array index bigger than array size
+REJECT
+Test reject on calling float index of array on left of equation
+REJECT
+Test reject on calling float index of array on right of equation
+ACCEPT
+Test reject on calling array index bigger than size on right of equation
+ACCEPT
+Test accepts on declaring same ids at different scopes for int 
+ACCEPT
+Test accepts on declaring same ids at differect scopes for float
+ACCEPT
+Test accepts on declaring same ids of different types at different scopes
+ACCEPT
+Test accepts on declaring same ids of different types at differect scopes
+REJECT
+Test reject on multiple id declaration at global scope
+REJECT
+Test reject on multiple id declaration at function scope
+REJECT
+Test reject on nultiple id declaration at compound scope
+ACCEPT
+Test parameters are at different scope than global scope
+ACCEPT
+Test params are unique for each function
+REJECT
+Test params and function declarations at same scope
+ACCEPT
+Test compound statements are at unique scopes
+REJECT
+Test reject on assigning float to int on method call
+REJECT
+Test reject on assigning int to float on method call
+REJECT
+Test reject on assigning void method results to anything
+REJECT
+Test reject on non-matching parameter types
+REJECT
+Test reject on too many arguments in method call
+REJECT
+Test reject on too few arguments in method call

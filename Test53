@@ -1,0 +1,8 @@
+int sum(int a, int b){
+	return a + b;
+}
+int main(void){
+	float f;
+	f = sum(3,4);		//Test reject on assigning int to float on method call
+	return 1;
+}

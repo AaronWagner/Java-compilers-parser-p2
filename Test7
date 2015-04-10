@@ -1,0 +1,8 @@
+float sum(float a, float b){
+	return a + b;
+}
+int main(void){
+	float f;
+	f = sum(3.4,5.5);
+	return 1;
+}

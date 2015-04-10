@@ -1,0 +1,4 @@
+FAILED FILES
+48 - Test parameters are at different scope than global scope - OUTPUT:  REJECT
+49 - Test params are unique for each function - OUTPUT:  REJECT
+50 - Test params and function declarations at same scope - OUTPUT:  ACCEPT

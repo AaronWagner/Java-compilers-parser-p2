@@ -1,0 +1,5 @@
+int main(void){
+	float a[30];
+	a[4] = 3.4;		//Test float assignment to float Array
+	return 1;
+}

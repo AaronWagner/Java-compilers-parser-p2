@@ -1,0 +1,10 @@
+int sum(int a , int b){
+	int i;
+	i = a + b;
+			//No return type, should throw REJECT
+}
+int main(void){
+	int k;
+	k = sum(2,3);
+	return k;
+}

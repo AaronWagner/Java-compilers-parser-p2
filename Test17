@@ -1,0 +1,6 @@
+int main(void){
+	int a[30];
+	a[10] = 3;		//Accept integer assignment to integer array
+	return 1;
+
+}

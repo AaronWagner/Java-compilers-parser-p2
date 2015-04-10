@@ -1,0 +1,5 @@
+int main(void){
+	int i;
+	i = 3 * 4;	//Test int * int
+	return 1;
+}

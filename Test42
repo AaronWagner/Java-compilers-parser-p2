@@ -1,0 +1,6 @@
+float f;
+int main(void){
+	float f;		//Test accepts when same id at different scopes for floats
+	f = 5.4;
+	return 1;
+}

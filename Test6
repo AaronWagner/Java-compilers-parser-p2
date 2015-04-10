@@ -1,0 +1,8 @@
+int sum(int a, int b){
+	return a + b;		//no error since it returns an int;
+}
+int main(void){
+	int i;
+	i = sum(2,3);
+	return i;
+}

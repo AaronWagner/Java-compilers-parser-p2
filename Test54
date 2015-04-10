@@ -1,0 +1,9 @@
+void sum(int a, int b){
+	int i;
+	i = a+ b;
+}
+int main(void){
+	int i;
+	i = sum(3,2);		//Test reject when assigning void method results to anything
+	return 1;
+}

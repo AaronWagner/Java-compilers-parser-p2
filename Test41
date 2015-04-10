@@ -1,0 +1,6 @@
+int i;
+int main(void){
+	int i;		//Test accepts when declaring same ids at different scopes
+	i = 4;
+	return 1;
+}

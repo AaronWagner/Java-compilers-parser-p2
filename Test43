@@ -1,0 +1,7 @@
+int i;
+
+int main(void){
+	float i;	//Test accepting multiple declarations of different types at different scopes
+	i = 3.4;
+	return 1;
+}

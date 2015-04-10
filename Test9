@@ -1,0 +1,7 @@
+float sum(int a, int b){
+	return a + b;		//Should throw error when attempting to return int on float method;
+}
+int main(void){
+	float f;
+	f = sum(3,4);
+}

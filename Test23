@@ -1,0 +1,6 @@
+int main(void){
+	int i;
+	float a[30];
+	i = 3 + a[10];	//Test Reject on int + float array
+	return 1;
+}

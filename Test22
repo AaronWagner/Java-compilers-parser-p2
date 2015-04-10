@@ -1,0 +1,7 @@
+int main(void){
+	float f;
+	float a[30];
+	f = 3.4 + a[10];	//Test Accept on float + float array Value
+	return 1;
+
+}

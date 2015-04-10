@@ -1,0 +1,5 @@
+int main(void){
+	float a[30];
+	a[10] = 3;
+	return 1;
+}

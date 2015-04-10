@@ -1,0 +1,5 @@
+int main(void){
+	int i;
+	i = 3 + 4;	//Test the sumation of integers for 2 ints
+	return i;
+}

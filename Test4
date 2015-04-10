@@ -1,0 +1,9 @@
+void sum(int a, int b){
+	int i;
+	i = a +b;
+			//method should not return anything
+}
+int main(void){
+	sum(2,3);
+	return 1;
+}

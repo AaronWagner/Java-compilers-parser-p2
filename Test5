@@ -1,0 +1,9 @@
+void sum(int a, int b){
+	int i;
+	i = a + b;
+	return i;	//Should throw error since it attempts to return something on a void
+}
+int main(void){
+	sum(2,3);
+	return 1;
+}

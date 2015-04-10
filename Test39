@@ -1,0 +1,6 @@
+int main(void){
+	int a[40];
+	int i;
+	i = a[3.4];		//Test rejecting when attempting to get value of array's float index
+	return 1;
+}

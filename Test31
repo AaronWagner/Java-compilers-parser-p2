@@ -1,0 +1,6 @@
+int main(void){
+	float f;
+	f = (3) + 3.4;		//Tests (int) + float
+	return 1;
+
+}
