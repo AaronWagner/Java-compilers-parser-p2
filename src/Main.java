@@ -52,9 +52,24 @@ public class Main
     ArrayList<String> outputFile;
     ArrayList<String> backpatchedOutputFile;
     int lineNumber;
+    int tempCounter;
     boolean backpatchRegister;
     String backPatchLabel;
+
     int backpatchIndex;
+    class Backpatch
+    {
+
+        String backLabel;
+        int targetlinenumber;
+
+        Backpatch (String label, int target)
+        {
+            backLabel=label;
+            targetlinenumber=target;
+        }
+
+    }
 
     class Token
     {
@@ -66,6 +81,7 @@ public class Main
         private boolean array;
         private int length;
         private ArrayList<String> parameterList;
+        ArrayList<Token> argumentsList;
         boolean returned;
 
         Token(String inputToken)
@@ -75,6 +91,7 @@ public class Main
             array=false;
             function=false;
             parameterList=new ArrayList<String>();
+            argumentsList=new ArrayList<Token>();
             returned=false;
         }
 
@@ -868,6 +885,12 @@ public class Main
         return output;
 
     }
+    public String addTemp()
+    {
+        tempCounter++;
+        return ("temp"+Integer.toString(tempCounter));
+    }
+
     public boolean compareType(Collection<String> inputs)
     {
         boolean matches=true;
@@ -1253,8 +1276,12 @@ public class Main
             parameters(theFunction);//F
             if (match(")"))
             {
-                       //todouncomment after merg addLine("func", theFunction.getLexum(), theFunction.getAssignedType(), Integer.toString())
+                /*
+                this begins my convention of double indenting addLines
+                 */
+                       addLine("FUNC", theFunction.getLexum(), theFunction.getAssignedType(), Integer.toString(theFunction.argumentsList.size()));
                 compound_statement(theFunction); //does not need parameters
+                       addLine("END FUNC", "", "", theFunction.getLexum());
             }
             else {error(")");}
         }
@@ -1356,7 +1383,7 @@ public class Main
         String theType;
         theType=type_specifier();
         theFunction.parameterList.add(theType);
-        //Todo fun decleration needs to return additional parameters to include in output
+        //done fun decleration needs to return additional parameters to include in output
 
         fun_declaration(theType, theFunction);
 
@@ -1372,8 +1399,8 @@ public class Main
             TypeValue modifiers;
             Token theParameter=tokens.get(tokenCounter-1);
             theParameter.setAssignedType(inputtype);
-
-            symbolTabel.get(scopeDepth).put(theParameter.getLexum(), theParameter);
+            theFunction.argumentsList.add(theParameter);
+            //symbolTabel.get(scopeDepth).put(theParameter.getLexum(), theParameter);
             //System.out.print(theParameter.getLexum()+" added to symbol table (in fun_declaration) as a"+ theParameter.getAssignedType()+"\n");
             modifiers=parameter_list_prime(); //5
             if (modifiers.type!=null&&modifiers.type.equals("array"))
@@ -1389,7 +1416,7 @@ public class Main
             }
             if (debug){System.out.print("Parameter: "+theParameter.getLexum()+" of type "+theFunction.parameterList.get(theFunction.parameterList.size()-1)+" added to a function "+theFunction.getLexum()+".\n");}
 
-            //Todo check modifiers for type and integrate into last parameter on parameter list.
+            //doneTodo check modifiers for type and integrate into last parameter on parameter list.
             declaration_prime(theFunction); //0
         }
         else
@@ -1407,7 +1434,7 @@ public class Main
     public TypeValue compound_statement(Token theFunction) //G-> {JK}
     {
         TypeValue output=new TypeValue();
-        //Todo may not need
+        //doneTodo may not need
         if (debugMethods){
             System.out.println("compound statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
@@ -1415,10 +1442,15 @@ public class Main
         {
             scopeDepth++;
             symbolTabel.add(new HashMap<String, Token>());
+            for (Token argument: theFunction.argumentsList)
+            {
+                symbolTabel.get(scopeDepth).put(argument.getLexum(), argument);
+            }
+
             local_declaration();   //J
             statement_list(theFunction);       //K
 
-            //Todo  JK need to affect output?
+            //doneTodo  JK need to affect output?
             if (match("}"))
             {
                 scopeDepth--;
@@ -1603,7 +1635,7 @@ public class Main
         {return;}
         else {error("expression statment");}
     }
-    public void selection_statement(Token theFunction) //N-> e(Q)L6  //Todo fix if else
+    public void selection_statement(Token theFunction) //N-> e(Q)L6  //doneTodo fix if else
     {
         if (debugMethods){
             System.out.println("selection statement\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
@@ -1696,7 +1728,7 @@ public class Main
 
             }
         }
-        else  if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))//todo check for first of Q
+        else  if (lookType("num")||lookType("int")||lookType("float")||lookType("id")||look("("))//donetodo check for first of Q
         {
             Token returnValue;
             returnValue=expression();
@@ -1723,7 +1755,7 @@ public class Main
                     reject("return value "+returnValue.getLexum()+" does not match return value type for function "+theFunction.getLexum()+" which is "+ theFunction.getAssignedType()+". \n" );
                 }
             }
-            //Todo uncomment after finishing typevalue of expression
+            //doneTodo uncomment after finishing typevalue of expression
 
             else
             {
@@ -1750,7 +1782,7 @@ public class Main
 
     {
         Token leftHandSide=null;
-        TypeValue output=new TypeValue(); //Todo needs to be populated
+        TypeValue output=new TypeValue(); //doneTodo needs to be populated
         if (debugMethods){
             System.out.println("expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
@@ -2027,16 +2059,17 @@ public class Main
         {error("relative operation ");}
         */
     }
-    public void addop(Token leftHandSide) //W-> + | -
+    public String addop(Token leftHandSide) //W-> + | -
     {
         if (debugMethods){
             System.out.println("additive operation\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match("+"))
-        {return;}
+        {return "+";}
         else if (match("-"))
-        {return;}
+        {return "-";}
             else {error("additive operand");}
+        return null;
     }
     public Token term(Token leftHandSide) //X-> Zy
     {
@@ -2062,8 +2095,23 @@ public class Main
         }
         if (look("*")||look("/"))
         {
-            mulop(leftHandSide);  //this will need to return an indcator of multiply or divide for intermediate code generation
+            String operand;
+
+            operand=mulop(leftHandSide);  //this will need to return an indcator of multiply or divide for intermediate code generation
             rightHandSide=factor(leftHandSide); //Z
+                //Todo make and call gettemp();
+
+                String temp=addTemp();
+                if (operand.equals("*"))
+                {
+                    addLine("MUL", leftHandSide.getLexum(), rightHandSide.getLexum(), temp);
+                }
+                else//implicit operand.equals("/")
+                {
+                    addLine("DIV", leftHandSide.getLexum(), rightHandSide.getLexum(), temp);
+                }
+
+                //
 
             if (compareType(leftHandSide, rightHandSide))
             {
@@ -2090,23 +2138,24 @@ public class Main
         //for intermediate code the return value will be the product of a multop or the left hand side for a null right hand side
         return rightHandSide;
     }
-    public void mulop(Token leftHandSide) //Y-> * | /
+    public String mulop(Token leftHandSide) //Y-> * | /
     {
         if (debugMethods){
             System.out.println("multiplication operation\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (match ("*"))
         {
-            return;
+            return "*" ;
         }
         else if (match("/"))
         {
-            return;
+            return "/";
         }
         else
         {
             error ("multiplication operand ");
         }
+        return null; //dead code return
     }
     public Token factor(Token leftHandSide) /*Z -> (Q) | R | 1 | c
                          //R->a8
@@ -2196,7 +2245,7 @@ public class Main
 
     public void variable_call_discriminator(Token leftHandSide) //new -> 8 |(2) | =Q
     {
-        //todo look at this shouldn't match "=" call expression
+        //donetodo look at this shouldn't match "=" call expression
         if (debugMethods){
             System.out.println("variable or call discriminator\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }

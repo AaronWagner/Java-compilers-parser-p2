@@ -13,10 +13,14 @@ Makefile and script executable for "grad" included with source-code.
 
 
 Supported Operations:
-
+"FUNC" - Define new function where operand 1 is the name, operand 2 is return type, and operand 3 is number of parameters.
+"END FUNC" - Indicate the end of the function whose name is in operand 3.
+"ALLOC", "ALLOCI", "ALLOCF" - Allocate the amount of space in operand 1 (4 per 1 array slot) for the variable in operand 3.
 "DIV" - Divide operand 1 by operand 2 and store in operand 3.
-"ADD" - Add operands 1 and 2 and store in operand 3.
 "MUL" - Multiply operands 1 and 2 and store in operand 3.
+
+
+"ADD" - Add operands 1 and 2 and store in operand 3.
 "SUB" - Subtract operand 2 from operand 1 and store in operand 3.
 "COMP" - Set up to compare operand 1 with operand 2 according to the conditional branch that follows.
 "BRLT" - If comp1 < comp2, jump to line in operand 3.
@@ -26,16 +30,15 @@ Supported Operations:
 "BR" - Unconditional jump to lin in operand 3.
 "BREQ" - If comp1 == comp2, jump to line in operand 3.
 "BRNE" - If comp1 != comp2, jump to line in operand 3.
-"FUNC" - Define new function where operand 1 is the name, operand 2 is return type, and operand 3 is number of parameters.
+
 "CALL" - Call a function that is either previously defined or is a supported function (input or output, see below).
 		Operand 1 is the name, operand 2 is the number of arguments, operand 3 is the variable to store the return value in.
 "ASSIGN" - Store value in operand 1 into operand 3.
 "ARG" -  Indicate that operand 3 is to be passed to the next called function.
 "RETURN" - Return operand 3 to the function that previously called the current function.
 "PARAM" - Indicate that the following variables should be populated by arguments of the current function.
-"END FUNC" - Indicate the end of the function whose name is in operand 3.
+
 "DISP" - Take the array in operand 1 and dive a depth listed in operand 2, where 4 : 1 slot in the array, and save the location in operand 3.
-"ALLOC", "ALLOCI", "ALLOCF" - Allocate the amount of space in operand 1 (4 per 1 array slot) for the variable in operand 3.
 
 Supported Function:
 
