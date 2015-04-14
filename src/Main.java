@@ -885,10 +885,25 @@ public class Main
         return output;
 
     }
-    public String addTemp()
+    public Token addTemp(Token input)
     {
+
+
         tempCounter++;
-        return ("temp"+Integer.toString(tempCounter));
+        String output="temp"+Integer.toString(tempCounter);
+        Token tempToken=new Token(output);
+        if (input.assignedType!=null)
+        {
+            tempToken.setAssignedType(input.getAssignedType());
+        }
+        else
+        {
+            tempToken.setAssignedType(input.getType());
+        }
+
+        symbolTabel.get(scopeDepth).put(tempToken.getLexum(), tempToken);
+        allocate(tempToken);
+        return tempToken;
     }
 
     public boolean compareType(Collection<String> inputs)
@@ -918,6 +933,7 @@ public class Main
         }
         return matches;
     }
+
 
 
     public String getType(String lexum)
@@ -2010,11 +2026,20 @@ public class Main
         }
         if (look("+")||look("-"))
         {
-            addop(leftHandSide);
+            String operand;
+            operand =addop(leftHandSide);
             Token rightHandSide=term(leftHandSide);
             compareType(leftHandSide,rightHandSide);
-            Token intermediate=getIntermediate(leftHandSide,rightHandSide);
-            Token next;
+            Token tempToken=addTemp(leftHandSide);
+            if (operand.equals("+"))
+            {
+                addLine("ADD", leftHandSide.getLexum(), rightHandSide.getLexum(), tempToken.getLexum());
+
+            }
+            else
+            {
+                addLine("SUB", leftHandSide.getLexum(), rightHandSide.getLexum(), tempToken.getLexum());
+            }
             if (compareType(leftHandSide,rightHandSide))
             {
                 if (leftHandSide!=null&&rightHandSide!=null)
@@ -2026,8 +2051,8 @@ public class Main
             {
                 reject("Cannot add/subtract"+rightHandSide.getLexum()+" of type "+rightHandSide.getAssignedType()+" to/from "+rightHandSide.getLexum()+" of type "+rightHandSide.getAssignedType()+"."  );
             }
-            next=additive_expression_prime(intermediate);
-            return getIntermediate(intermediate,next);
+            Token next=additive_expression_prime(tempToken);
+            return next;
 
         }
         else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows of u
@@ -2101,7 +2126,8 @@ public class Main
             rightHandSide=factor(leftHandSide); //Z
                 //Todo make and call gettemp();
 
-                String temp=addTemp();
+                Token returnToken =addTemp(leftHandSide);
+                String temp=returnToken.getLexum();
                 if (operand.equals("*"))
                 {
                     addLine("MUL", leftHandSide.getLexum(), rightHandSide.getLexum(), temp);
@@ -2126,7 +2152,7 @@ public class Main
             //intermediate=getIntermediate(leftHandSide,rightHandSide);
             term_prime(rightHandSide);
 
-            return rightHandSide;
+            return returnToken;
         }
 
         else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows y
@@ -2134,7 +2160,9 @@ public class Main
             return rightHandSide;
         }
         else
-        {error ("operand, ',', or ';' ");}
+        {
+            error ("operand, ',', or ';' ");
+        }
         //for intermediate code the return value will be the product of a multop or the left hand side for a null right hand side
         return rightHandSide;
     }
