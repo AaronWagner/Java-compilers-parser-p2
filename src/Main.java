@@ -921,7 +921,7 @@ public class Main
                     } else {
                         System.out.println("REJECT\n");
                         System.out.println("Type mismatch: " + inputString + " with " + otherInputString + ".");
-                        System.exit(-1);
+                        //System.exit(-1);
                         matches = false;
                     }
                 }
@@ -962,7 +962,7 @@ public class Main
                     "\"\n Of type: " + tokens.get(tokenCounter).getType() +
                     "\n on Token # " + tokenCounter + "\n");
 
-        System.exit(-1);
+       // System.exit(-1);
     }
 
     public Token findToken(String lexum)
@@ -1022,7 +1022,7 @@ public class Main
         if (debug){System.out.print(message+"\n");}
         //printSymbolTabel();
         System.out.print("REJECT\n");
-        System.exit(-1);
+        //System.exit(-1);
     }
     public void printSymbolTabel()
     {
@@ -1264,7 +1264,7 @@ public class Main
         {
             System.out.println("REJECT \n duplicate lexum decliration in same scope\n have :"+checker.toString()+
                     "allready declared when declaring "+theDeclared.toString());
-            System.exit(-1);
+            //System.exit(-1);
         }
         return theDeclared;
 
@@ -1740,7 +1740,7 @@ public class Main
             {
                 System.out.print("REJECT\n Return without Parameter in function "+theFunction.getLexum()+" of return type "+ theFunction.getAssignedType()+"\n");
                 printSymbolTabel();
-                System.exit(-1);
+                //System.exit(-1);
 
             }
         }
@@ -1776,7 +1776,7 @@ public class Main
             else
             {
                 System.out.print("REJECT \n return value has null type: this is probably a compiler error please email aaron.p.wagner@gmail.com with details");
-                System.exit(-1);
+                //System.exit(-1);
             }
 
 
@@ -2027,19 +2027,11 @@ public class Main
         if (look("+")||look("-"))
         {
             String operand;
-            operand =addop(leftHandSide);
-            Token rightHandSide=term(leftHandSide);
+            operand =addop(leftHandSide);               //W
+            Token rightHandSide=term(leftHandSide);     //X
             compareType(leftHandSide,rightHandSide);
             Token tempToken=addTemp(leftHandSide);
-            if (operand.equals("+"))
-            {
-                addLine("ADD", leftHandSide.getLexum(), rightHandSide.getLexum(), tempToken.getLexum());
 
-            }
-            else
-            {
-                addLine("SUB", leftHandSide.getLexum(), rightHandSide.getLexum(), tempToken.getLexum());
-            }
             if (compareType(leftHandSide,rightHandSide))
             {
                 if (leftHandSide!=null&&rightHandSide!=null)
@@ -2051,8 +2043,34 @@ public class Main
             {
                 reject("Cannot add/subtract"+rightHandSide.getLexum()+" of type "+rightHandSide.getAssignedType()+" to/from "+rightHandSide.getLexum()+" of type "+rightHandSide.getAssignedType()+"."  );
             }
-            Token next=additive_expression_prime(tempToken);
-            return next;
+
+            if (rightHandSide!=null)
+            {
+                if (operand.equals("+"))
+                {
+                    addLine("ADD", leftHandSide.getLexum(), rightHandSide.getLexum(), tempToken.getLexum());
+
+                }
+                else
+                {
+                    addLine("SUB", leftHandSide.getLexum(), rightHandSide.getLexum(), tempToken.getLexum());
+                }
+
+            }
+
+
+            Token next=additive_expression_prime(tempToken);        //u
+            if (next!=null)
+            {
+                return next;
+            }
+            else
+            {
+                return tempToken;
+            }
+
+
+
 
         }
         else if (look("!")||look(">")||look("=")||look("=")||look("<")||look("]")||look(";")||look(")")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows of u
@@ -2098,18 +2116,32 @@ public class Main
     }
     public Token term(Token leftHandSide) //X-> Zy
     {
+        //done make it return result
         Token rightHandSide;
-        Token intermediate;
+        Token possibleResult;
+        Token input;
         if (debugMethods){
             System.out.println("term\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
 
-        rightHandSide=factor(leftHandSide);
-        compareType(leftHandSide,rightHandSide);
-        rightHandSide=term_prime(leftHandSide);
-        compareType(leftHandSide,rightHandSide);
+        possibleResult=factor(leftHandSide);
+        if (possibleResult!=null)
+        {
+            input=possibleResult;
+        }
+        else
+        {
+            input=leftHandSide;
+        }
+                //compareType(leftHandSide,rightHandSide);
+        possibleResult=term_prime(input);
+        if(possibleResult==null)
+        {
+            possibleResult=input;
+        }
+        //compareType(leftHandSide,rightHandSide);
         //intermediate=getIntermediate(leftHandSide,rightHandSide);
-        return rightHandSide;
+        return possibleResult;
     }
     public Token term_prime(Token leftHandSide) //y-> YZy | @
     {
@@ -2150,14 +2182,20 @@ public class Main
                 reject("multiplication operation between different types have "+leftHandSide.getLexum()+" of type "+leftHandSide.getAssignedType() +" and "+rightHandSide.getLexum()+" of type "+ rightHandSide.getAssignedType()+".");
             }
             //intermediate=getIntermediate(leftHandSide,rightHandSide);
-            term_prime(rightHandSide);
+           Token possibleOutput;
+            possibleOutput=term_prime(rightHandSide);      //done how does this fit into the return pattern
+            if (possibleOutput==null)
+            {
+                returnToken=possibleOutput;
+            }
+
 
             return returnToken;
         }
 
         else if (look("+")||look("-")||look("!")||look(">")||look("=")||look("<")||look("]")||look(";")||look(")")||look(");")||look(",")||look("<=")||look(">=")||look("==")||look("!="))//follows y
         {
-            return rightHandSide;
+            return null;
         }
         else
         {
@@ -2212,6 +2250,7 @@ public class Main
             checkToken(rightHandSide);
             if (debug){System.out.print(rightHandSide.toString());}
             variable_call_discriminator(rightHandSide);
+            //
         }
         else if (matchType("num")) {
 
