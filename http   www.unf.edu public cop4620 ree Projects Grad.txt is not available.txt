@@ -18,10 +18,10 @@ Supported Operations:
 "ALLOC", "ALLOCI", "ALLOCF" - Allocate the amount of space in operand 1 (4 per 1 array slot) for the variable in operand 3.
 "DIV" - Divide operand 1 by operand 2 and store in operand 3.
 "MUL" - Multiply operands 1 and 2 and store in operand 3.
-
-
 "ADD" - Add operands 1 and 2 and store in operand 3.
 "SUB" - Subtract operand 2 from operand 1 and store in operand 3.
+
+
 "COMP" - Set up to compare operand 1 with operand 2 according to the conditional branch that follows.
 "BRLT" - If comp1 < comp2, jump to line in operand 3.
 "BRLTE" - If comp1 <= comp2, jump to line in operand 3.

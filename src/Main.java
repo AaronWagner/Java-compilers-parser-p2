@@ -182,12 +182,9 @@ public class Main
         myMain.depth=0;
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
-        myMain.debug =false;
-        myMain.debugMethods=false;
-        for (int i=0; i<myMain.inputArray.length; i++)
-        {
-            if (myMain.debug) System.out.print("I="+i+":~"+myMain.inputArray[i]);
-        }
+        myMain.debug =true;
+        myMain.debugMethods=true;
+
         for (int i=0; i<myMain.inputArray.length; i++)
         {
             myMain.inputStringWOLComments="";
@@ -202,13 +199,22 @@ public class Main
         myMain.symbolTabel=new ArrayList<HashMap>();
         myMain.symbolTabel.add(new HashMap<String, Token>());
         myMain.makeEndToken();
+        //Token endToken=new Token("$")
+        //myMain.tokens.add();
+
         myMain.program();
-        System.out.print("File before backpatching\n"+myMain.outputFile);
+        for (int i=0; i<myMain.inputArray.length; i++)
+        {
+            if (myMain.debug) System.out.print("I="+i+":~"+myMain.inputArray[i]);
+        }
+        System.out.print("File before backpatching\n");
+                for (String line: myMain.outputFile)
+                {
+                    System.out.print(line);
+                }
         myMain.backpatch();
 
-        /*Token endToken=new Token("$")
-        myMain.tokens.add();
-        */
+
     }
     public void makeEndToken()
     {
@@ -826,7 +832,7 @@ public class Main
         }
 
 
-        System.out.print("comparing "+left.toString()+" and "+right.toString()+"\n");
+        //System.out.print("comparing "+left.toString()+" and "+right.toString()+"\n");
 
         if (left.getAssignedType()==null)
         {
@@ -899,9 +905,14 @@ public class Main
         else
         {
             tempToken.setAssignedType(input.getType());
+            input.setAssignedType(input.getType());
         }
 
         symbolTabel.get(scopeDepth).put(tempToken.getLexum(), tempToken);
+        if (debugMethods)
+        {
+            System.out.print("\n Allocating "+tempToken+"\n");
+        }
         allocate(tempToken);
         return tempToken;
     }
@@ -1000,8 +1011,11 @@ public class Main
     {
         if (!checkingToken.getType().equals("id"))
         {
-            checkingToken.assignedType=checkingToken.getType();
-            return checkingToken;
+            if (checkingToken.type!=null)
+            {
+                checkingToken.assignedType = checkingToken.getType();
+                return checkingToken;
+            }
         }
         Token output;
         output=findToken(checkingToken.getLexum());
@@ -1018,10 +1032,15 @@ public class Main
     }
     public void reject(String message)
     {
-
-        if (debug){System.out.print(message+"\n");}
+        /*
+        if (debug){
+            */
+        System.out.print(message+"\n");
+        /*
+        }
+         */
         //printSymbolTabel();
-        System.out.print("REJECT\n");
+        //System.out.print("REJECT\n");
         //System.exit(-1);
     }
     public void printSymbolTabel()
@@ -1044,11 +1063,11 @@ public class Main
             outputFile=new ArrayList<String>();
         }
         if (!backpatchRegister) {
-            outputFile.add(lineNumber + "\t" + operator + "\t" + param1 + "\t" + param2 + "\t" + target);
+            outputFile.add(lineNumber + " " + operator + "\t" + param1 + "\t" + param2 + "\t" + target+"\n");
         }
         else
         {
-            outputFile.add(lineNumber + "\t" + operator + "\t" + param1 + "\t" + param2 + "\t" + target + "\t" +backPatchLabel);
+            outputFile.add(lineNumber + " " + operator + "\t" + param1 + "\t" + param2 + "\t" + target + "\t" +backPatchLabel+"\n");
         }
 
     }
@@ -1059,7 +1078,7 @@ public class Main
         {
             outputFile=new ArrayList<String>();
         }
-        outputFile.add(lineNumber+"\t"+operator+"\t"+param1+"\t"+param2+"\t"+target+"\t"+backPatchLabel);
+        outputFile.add(lineNumber+" "+operator+"\t"+param1+"\t"+param2+"\t"+target+"\t"+backPatchLabel);
     }
     public void storeToken(Token input)
     {
@@ -1098,7 +1117,7 @@ public class Main
     }
     public void allocate (Token theDeclared)
     {
-        if (!(theDeclared.getAssignedType()!=null)&&!(theDeclared.getAssignedType().equals("void")))
+        if ((theDeclared.getAssignedType()!=null)&&!(theDeclared.getAssignedType().equals("void")))
             //should not need to check for a void allocation
         {
             if (theDeclared.getAssignedType().equals("int"))
@@ -1125,6 +1144,7 @@ public class Main
                     addLine("alf", Integer.toString((size*4)), "", theDeclared.getLexum());
                 }
             }
+
 
 
         }
@@ -1181,18 +1201,21 @@ public class Main
         moved to if match id
         */
         declaration_list(theDeclared);//A
+        /*
         if (match("$"))
         {
             if (theDeclared.getLexum().equals("main"))
             {
-                System.out.println("ACCEPT");
-                System.exit(0);
+                System.out.println("ACCEPT1");
+                return;
+                //System.exit(0);
             }
             else
             {
                 reject("Main is not the last function declared contrary to the requirement on pg 493");
             }
         }
+        */
 
     }
     public void declaration_list(Token theDeclared) //A->BA | @
@@ -1210,8 +1233,9 @@ public class Main
         {
             if (theDeclared.getLexum().equals("main"))
             {
-                System.out.println("ACCEPT");
-                System.exit(0);
+                System.out.println("ACCEPT2");
+               return;
+               // System.exit(0);
             }
             else
             {
@@ -1297,7 +1321,7 @@ public class Main
                  */
                        addLine("FUNC", theFunction.getLexum(), theFunction.getAssignedType(), Integer.toString(theFunction.argumentsList.size()));
                 compound_statement(theFunction); //does not need parameters
-                       addLine("END FUNC", "", "", theFunction.getLexum());
+                       addLine("END\tFUNC", "", "", theFunction.getLexum());
             }
             else {error(")");}
         }
@@ -2036,7 +2060,7 @@ public class Main
             {
                 if (leftHandSide!=null&&rightHandSide!=null)
                 {
-                    if (debug) System.out.print("\n Good addition or subtraction"+leftHandSide.toString()+rightHandSide.toString());
+                    //if (debug) System.out.print("\n Good addition or subtraction"+leftHandSide.toString()+rightHandSide.toString());
                 }
             }
             else
@@ -2147,6 +2171,9 @@ public class Main
     {
         Token rightHandSide=null;
         Token intermediate=null;
+        Token outputToken;
+        Token returnToken;
+        Token possibleOutput;
         if (debugMethods) {
             System.out.println("term prime\n TokenCounter: " + tokenCounter + "Token: " + tokens.get(tokenCounter).toString());
         }
@@ -2158,11 +2185,12 @@ public class Main
             rightHandSide=factor(leftHandSide); //Z
                 //Todo make and call gettemp();
 
-                Token returnToken =addTemp(leftHandSide);
+                returnToken =addTemp(leftHandSide);
                 String temp=returnToken.getLexum();
                 if (operand.equals("*"))
                 {
                     addLine("MUL", leftHandSide.getLexum(), rightHandSide.getLexum(), temp);
+
                 }
                 else//implicit operand.equals("/")
                 {
@@ -2182,9 +2210,9 @@ public class Main
                 reject("multiplication operation between different types have "+leftHandSide.getLexum()+" of type "+leftHandSide.getAssignedType() +" and "+rightHandSide.getLexum()+" of type "+ rightHandSide.getAssignedType()+".");
             }
             //intermediate=getIntermediate(leftHandSide,rightHandSide);
-           Token possibleOutput;
-            possibleOutput=term_prime(rightHandSide);      //done how does this fit into the return pattern
-            if (possibleOutput==null)
+
+            possibleOutput=term_prime(returnToken);      //done how does this fit into the return pattern
+            if (possibleOutput!=null)
             {
                 returnToken=possibleOutput;
             }
