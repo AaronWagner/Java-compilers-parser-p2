@@ -187,7 +187,7 @@ public class Main
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
         myMain.debug =false;
-        myMain.debugMethods=false;
+        myMain.debugMethods=true;
 
         for (int i=0; i<myMain.inputArray.length; i++)
         {
@@ -955,7 +955,7 @@ public class Main
         {
             System.out.print("\n Allocating "+tempToken+"\n");
         }
-        allocate(tempToken);
+        //allocate(tempToken);
         return tempToken;
     }
 
@@ -1181,28 +1181,39 @@ public class Main
         if ((theDeclared.getAssignedType()!=null)&&!(theDeclared.getAssignedType().equals("void")))
             //should not need to check for a void allocation
         {
+            int sizeInt;
+            if(theDeclared.length!=0)
+            {
+                sizeInt=theDeclared.length*4;
+            }
+            else
+            {
+                sizeInt=4;
+            }
+            String size=Integer.toString(sizeInt);
+
             if (theDeclared.getAssignedType().equals("int"))
             {
-                addLine("ali", "4", "", theDeclared.getLexum());
+                addLine("ali", size, "", theDeclared.getLexum());
             }
             else if(theDeclared.getAssignedType().equals("float"))
             {
-                addLine("alf", "4", "", theDeclared.getLexum());
+                addLine("alf", size, "", theDeclared.getLexum());
             }
             else if (theDeclared.getAssignedType().contains("array"))
             {
-                int size = theDeclared.length;
-                if (size==0)
+                sizeInt = theDeclared.length;
+                if (sizeInt==0)
                 {
                     reject(theDeclared.getLexum()+" declared as "+theDeclared.getAssignedType()+"[] of size zero");
                 }
                 if (theDeclared.getAssignedType().contains("int"))
                 {
-                    addLine("ali", Integer.toString((size*4)), "", theDeclared.getLexum());
+                    addLine("ali", Integer.toString((sizeInt*4)), "", theDeclared.getLexum());
                 }
                 else if (theDeclared.getAssignedType().contains("float"))
                 {
-                    addLine("alf", Integer.toString((size*4)), "", theDeclared.getLexum());
+                    addLine("alf", Integer.toString((sizeInt*4)), "", theDeclared.getLexum());
                 }
             }
 
@@ -1255,6 +1266,7 @@ public class Main
         {
             error("Type id");
         }
+        //System.out.print("The declared is:"+theDeclared);
         stemmed_decleration(theDeclared);//C
         /*
         symbolTabel.get(scopeDepth).put(theDeclared.getLexum(), theDeclared);
@@ -1332,7 +1344,7 @@ public class Main
             error("Type id");
         }
        modifiers=stemmed_decleration(theDeclared);//C
-
+        //System.out.print("Thedeclared:"+modifiers.toString());
 
         if (modifiers.type!=null&&modifiers.type.equals("array"))
         {
@@ -1766,7 +1778,7 @@ public class Main
                     }
                     addLine("block", "", "" , "");
                     statement(theFunction);
-                    addLine("end", "block", Integer.toString(outputFile.size()),"");
+                    addLine("END", "block", Integer.toString(outputFile.size()),"");
                     lineoftarget=addLine("nulop","","","");
                     theFunction.elseline=lineoftarget;
                     local_declarations_prime(theFunction);
@@ -1811,7 +1823,7 @@ public class Main
                 //fix=addLine("jump", "", "", "target", ("backpatch"+backpatchIndex) );
                 addLine("block","","","");
                 statement(theFunction);
-                target=addLine("end", "block", "","");
+                target=addLine("END", "block", "","");
                 backpatch(theFunction.elseline,target);
             }
             else{error("statement");}
@@ -1833,7 +1845,9 @@ public class Main
             //(Q)L
             if (match("("))
             {
+                int startofexpression=outputFile.size();
                 comparison=expression(theFunction);
+                System.out.print("Comparison:"+comparison);
                 if (match(")"))
                 {
                     int target;
@@ -1853,8 +1867,8 @@ public class Main
                     }
                     addLine("block","","","");
                     statement(theFunction);
-                    addLine("jump", "", "", Integer.toString(lineToCorrect-1) );
-                    target=addLine("end","block","","");
+                    addLine("jump", "", "", Integer.toString(startofexpression+1) );
+                    target=addLine("END","block","","");
                     backpatch(lineToCorrect, target);
 
                 }
@@ -2133,11 +2147,26 @@ public class Main
             {
                 //what spould be the left hand side for this?!?!?
                 possArray=stemmed_variable(leftHandSide);  //8
-                leftHandSide=updateIfNotNull(possArray, leftHandSide);
-                output=updateIfNotNull(possArray,output);
-                term_prime(leftHandSide);  //y
-                additive_expression_prime(leftHandSide); //u
-                stemmed_other_expression(leftHandSide); //9
+                output=updateIfNotNull(possArray, output);
+                possibleOutput=updateIfNotNull(possArray,possibleOutput);
+                outgoingInput=updateIfNotNull(possArray, outgoingInput); //update output
+                System.out.print("outgoingInput="+outgoingInput);
+                possibleOutput=term_prime(outgoingInput);  //y
+
+                output=updateIfNotNull(possibleOutput, output);
+                possibleOutput=updateIfNotNull(possibleOutput, possibleOutput);
+                outgoingInput=updateIfNotNull(possibleOutput, outgoingInput); //update output
+                System.out.print("outgoingInput="+outgoingInput);
+                possibleOutput=additive_expression_prime(outgoingInput); //u
+                //System.out.print("additive_expression_prime("+outgoingInput.getLexum()+") returned:"+possibleOutput);
+                output=updateIfNotNull(possibleOutput, output);
+                possibleOutput=updateIfNotNull(possibleOutput, possibleOutput);
+                outgoingInput=updateIfNotNull(possibleOutput, outgoingInput); //update output
+                System.out.print("outgoingInput="+outgoingInput);
+                possibleOutput=stemmed_other_expression(leftHandSide); //9
+                output=updateIfNotNull(possibleOutput, output);
+                possibleOutput=updateIfNotNull(possibleOutput, possibleOutput);
+                outgoingInput=updateIfNotNull(possibleOutput, outgoingInput); //update output
             }
         }
         else if (match("="))
@@ -2164,13 +2193,14 @@ public class Main
             possibleOutput=term_prime(leftHandSide);  //y
             output=updateIfNotNull(possibleOutput, output);
             outgoingInput=updateIfNotNull(possibleOutput,outgoingInput);
-            possibleOutput=additive_expression_prime(leftHandSide); //u
+            possibleOutput=additive_expression_prime(outgoingInput); //u
             output=updateIfNotNull(possibleOutput, output);
             outgoingInput=updateIfNotNull(possibleOutput,outgoingInput);
-            possibleOutput=stemmed_other_expression(leftHandSide); //9
+            possibleOutput=stemmed_other_expression(outgoingInput); //9
             output=updateIfNotNull(possibleOutput, output);
             outgoingInput=updateIfNotNull(possibleOutput,outgoingInput);
         }
+         System.out.println("\n stemmed_expression("+leftHandSide.getLexum()+") is returning:"+output+"\n");
         return output;
     }
     //This method is currently not called
@@ -2261,13 +2291,15 @@ public class Main
         Token output=null;
         Token temp=null;
         if (debugMethods){
-            System.out.println("stemmed expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+            System.out.println("stemmed other expression\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
         }
         if (look("!")||look(">")||look("=")||look("<")||look("<=")||look(">=")||look("==")||look("!="))
         {
+            System.out.print("left hand side is: "+leftHandSide);
             String operator=relop(leftHandSide);
 
             possibleOutput=additive_expression(outgoingInput);
+            System.out.print("additive_expression("+outgoingInput+")returned*:"+possibleOutput);
             output=updateIfNotNull(possibleOutput, output);
             outgoingInput=updateIfNotNull(possibleOutput, outgoingInput);
             temp=addTemp(leftHandSide);
@@ -2297,6 +2329,7 @@ public class Main
         output=updateIfNotNull(possibleOutput, output);
         outgoingInput=updateIfNotNull(possibleOutput, outgoingInput);
         possibleOutput=additive_expression_prime(outgoingInput);
+        System.out.print("additive_expression_prime("+outgoingInput+");");
         compareType(leftHandSide, possibleOutput);
         output=updateIfNotNull(possibleOutput, output);
         outgoingInput=updateIfNotNull(possibleOutput, outgoingInput);
@@ -2308,7 +2341,7 @@ public class Main
         Token possibleReturn=null;
         Token returned=null;
         if (debugMethods){
-            System.out.println("additive expression prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString());
+            System.out.println("additive expression prime\n TokenCounter: "+tokenCounter+"Token: "+tokens.get(tokenCounter).toString()+"Input:"+leftHandSide);
         }
         if (look("+")||look("-"))
         {
@@ -2528,7 +2561,8 @@ public class Main
         if (match("("))
         {
             rightHandSide=expression(leftHandSide);
-            possibleOutput=updateIfNotNull(rightHandSide,possibleOutput);
+            possibleOutput=updateIfNotNull(rightHandSide, possibleOutput);
+
             if( match (")"))
             {
                 return rightHandSide;
@@ -2538,6 +2572,7 @@ public class Main
         else if (matchType("id"))//first of R and 1
         {
             rightHandSide=tokens.get(tokenCounter-1);
+            output=rightHandSide;
             checkToken(rightHandSide);
             if (debug){System.out.print(rightHandSide.toString());}
             possibleOutput=variable_call_discriminator(rightHandSide);
@@ -2548,6 +2583,7 @@ public class Main
         else if (matchType("num")) {
 
             rightHandSide = tokens.get(tokenCounter - 1);
+            output=rightHandSide;
             if (leftHandSide.getType().equals("id")) {
                 if (!leftHandSide.getAssignedType().equals("num")) {
                     reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
@@ -2565,7 +2601,8 @@ public class Main
         else if (matchType("int"))
         {
             rightHandSide=tokens.get(tokenCounter-1);
-            if (leftHandSide.getType().equals("id")) {
+            output=rightHandSide;
+            /*if (leftHandSide!=null&&leftHandSide.getType().equals("id")) {
                 if (!leftHandSide.getAssignedType().equals("int")) {
                     reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
                 }
@@ -2576,12 +2613,13 @@ public class Main
                 {
                     reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
                 }
-            }
+            }*/
             return rightHandSide;
         }
         else if (matchType("float"))
         {
             rightHandSide=tokens.get(tokenCounter-1);
+            output=rightHandSide;
             if (leftHandSide.getType().equals("id")) {
                 if (!leftHandSide.getAssignedType().equals("float")) {
                     reject("type missmatch between " + leftHandSide.getLexum() + " and " + rightHandSide.getLexum());
