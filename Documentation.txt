@@ -1,5 +1,37 @@
 This program performs a recursive decent parse based on the following grammar adapted from the c-- grammar expanding on the token generation from project 1, which are stored in a ArrayList "tokens"  the index of the current token is tracked by an integer currentToken.  All of the nonterminal in the below grammar are void procedures, but the process is driven by four methods:
 
+Intermediate code generation is performed via recursive decent.  Some type checking has been removed and semantic analysis error terminating the program has been disabled until further integration and comparison with null tokens can be implemented.  The need for comparison with null to be required is because the overall pattern:
+Token ruleMethod (Token leftHandSide)
+{ Token output=null;
+  /*performs rule and updates output to the right hand side, or the temporary token if two tokens are combined  
+  */
+}  This causes methods that go out to an empty string to return a null.
+
+The following operands are used
+
+ADD		operand1 operand2   result	//adds the two operands and stores the value in the result.
+SUB		operand1 operand2   result  //subtracts operand2 from operand1 and stores it in the result
+MUL		operand1 operand2,  result  //multiplies the two operands and stores them in result
+DIV		operand1 operand2	result  //divides operand1 by operand2 and stores the result in result
+ali		size				result  //allocates an integer or series of integers 
+alf		size				result  //allocates a float or series of floats               
+assign  operand1			result  //assigns operand1 to result
+FUNC	operand	type		#params //designates the beginning of a function
+END		type				name    //designates the end of a block or function this is a nuloperator unless there is a function
+call 	func	#args		result  // calls the defined func with #args of arguments and stores the output in the result  
+arrayval array  index       result  //retrieves an element of an array and stores the output in a result
+comp 	operand1 operand2	result  //stores the comparison flag in the result
+jump						target  // moves the program to the target line
+JGTE	operand				target  // moves to the target line if the operand is grater than or equal to.
+JLTE	operand				target  // moves to the target line if the operand is later than or equal to.
+JNEQ	operand				target  // moves to the target line if the operand is not equal to.
+JEQ		operand				target  // moves to the target line if the operand is equal to
+JLT 	operand				target  // moves to the target line if the operand is less than. 
+JGT		operand				target  // moves to the target line if the operand is greater than.
+nulop								// an empty instruction left after an if block to allow for backpatching of an else, otherwise proceeds to the next instruction with no other change in state
+
+
+
 bool match (String input)
 bool matchType(String input) 
 bool look (String input)

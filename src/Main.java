@@ -187,7 +187,7 @@ public class Main
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
         myMain.debug =false;
-        myMain.debugMethods=true;
+        myMain.debugMethods=false;
 
         for (int i=0; i<myMain.inputArray.length; i++)
         {
@@ -917,7 +917,7 @@ public class Main
                 return output;
             }
             else {
-                reject("type mismmatch between "+left.getLexum()+" and "+right.getLexum());
+                if (debug) reject("type mismmatch between "+left.getLexum()+" and "+right.getLexum());
             }
         }
         else
@@ -928,7 +928,7 @@ public class Main
         }
         else
         {
-            reject("type mismmatch between "+left.getLexum()+" and "+right.getLexum());
+            if (debug) reject("type mismmatch between "+left.getLexum()+" and "+right.getLexum());
         }
         return output;
 
@@ -2150,19 +2150,19 @@ public class Main
                 output=updateIfNotNull(possArray, output);
                 possibleOutput=updateIfNotNull(possArray,possibleOutput);
                 outgoingInput=updateIfNotNull(possArray, outgoingInput); //update output
-                System.out.print("outgoingInput="+outgoingInput);
+                //System.out.print("outgoingInput="+outgoingInput);
                 possibleOutput=term_prime(outgoingInput);  //y
 
                 output=updateIfNotNull(possibleOutput, output);
                 possibleOutput=updateIfNotNull(possibleOutput, possibleOutput);
                 outgoingInput=updateIfNotNull(possibleOutput, outgoingInput); //update output
-                System.out.print("outgoingInput="+outgoingInput);
+                //System.out.print("outgoingInput="+outgoingInput);
                 possibleOutput=additive_expression_prime(outgoingInput); //u
                 //System.out.print("additive_expression_prime("+outgoingInput.getLexum()+") returned:"+possibleOutput);
                 output=updateIfNotNull(possibleOutput, output);
                 possibleOutput=updateIfNotNull(possibleOutput, possibleOutput);
                 outgoingInput=updateIfNotNull(possibleOutput, outgoingInput); //update output
-                System.out.print("outgoingInput="+outgoingInput);
+                //System.out.print("outgoingInput="+outgoingInput);
                 possibleOutput=stemmed_other_expression(leftHandSide); //9
                 output=updateIfNotNull(possibleOutput, output);
                 possibleOutput=updateIfNotNull(possibleOutput, possibleOutput);
@@ -2200,7 +2200,7 @@ public class Main
             output=updateIfNotNull(possibleOutput, output);
             outgoingInput=updateIfNotNull(possibleOutput,outgoingInput);
         }
-         System.out.println("\n stemmed_expression("+leftHandSide.getLexum()+") is returning:"+output+"\n");
+         //System.out.println("\n stemmed_expression("+leftHandSide.getLexum()+") is returning:"+output+"\n");
         return output;
     }
     //This method is currently not called
