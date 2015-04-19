@@ -84,6 +84,7 @@ public class Main
         ArrayList<Token> argumentsList;
         boolean returned;
         String comparisonType;
+        int elseline;
 
         Token(String inputToken)
         {
@@ -95,6 +96,7 @@ public class Main
             argumentsList=new ArrayList<Token>();
             returned=false;
             comparisonType=null;
+            elseline=-1;
         }
 
         public void setLexum(String input)
@@ -185,7 +187,7 @@ public class Main
         myMain.scope=0;
         myMain.tokens = new ArrayList<Token>();
         myMain.debug =false;
-        myMain.debugMethods=true;
+        myMain.debugMethods=false;
 
         for (int i=0; i<myMain.inputArray.length; i++)
         {
@@ -712,8 +714,8 @@ public class Main
          {
 
              if (input.equals("$")) {
-                 System.out.println("ACCEPT: " + tokens.get(tokenCounter).toString() + "\n");
-                 System.out.println("ACCEPT");
+                 //System.out.println("ACCEPT: " + tokens.get(tokenCounter).toString() + "\n");
+                 //System.out.println("ACCEPT");
              }
              else
              {
@@ -1292,7 +1294,7 @@ public class Main
         {
             if (theDeclared.getLexum().equals("main"))
             {
-                System.out.println("ACCEPT2");
+                //System.out.println("ACCEPT2");
                return;
                // System.exit(0);
             }
@@ -1764,7 +1766,9 @@ public class Main
                     }
                     addLine("block", "", "" , "");
                     statement(theFunction);
-                    lineoftarget=addLine("end", "block", Integer.toString(outputFile.size()),"");
+                    addLine("end", "block", Integer.toString(outputFile.size()),"");
+                    lineoftarget=addLine("nulop","","","");
+                    theFunction.elseline=lineoftarget;
                     local_declarations_prime(theFunction);
 
 
@@ -1787,11 +1791,28 @@ public class Main
             int target;
             if (look("while")||look("if")||lookType("num")||lookType("int")|| lookType("float")||lookType("id")||look(";")||look("(")||look("{")||look("return"))//check first of statement
             {
-                fix=addLine("jump", "", "", "target", ("backpatch"+backpatchIndex) );
+                if (theFunction.elseline!=-1)
+                {
+                    String jump=makeStringTen("jump");
+                    String empty=makeStringTen("");
+                    String targetMark=makeStringTen("target");
+                    String backMark=makeStringTen("backpatch");
+                    String oldline=outputFile.get(theFunction.elseline-1);
+
+                    //1 is not subtracted to include the trailing space
+                    String newline=oldline.substring(0,Integer.toString(theFunction.elseline).length()+1)+jump+"       "+empty+empty+targetMark+backMark;
+                    outputFile.set(theFunction.elseline-1, newline);
+                }
+                else
+                {
+                    System.out.print("else without if");
+                    System.exit(-1);
+                }
+                //fix=addLine("jump", "", "", "target", ("backpatch"+backpatchIndex) );
                 addLine("block","","","");
                 statement(theFunction);
                 target=addLine("end", "block", "","");
-                backpatch(fix,target);
+                backpatch(theFunction.elseline,target);
             }
             else{error("statement");}
         }
@@ -2131,8 +2152,8 @@ public class Main
             if (debug) {System.out.print("Assignment Statment");}
             */
             // debugging
-            System.out.print("left hand side:"+leftHandSide);
-            System.out.print("right hand side:"+rightHandSide);
+            //System.out.print("left hand side:"+leftHandSide);
+            //System.out.print("right hand side:"+rightHandSide);
             addLine("assign", rightHandSide.getLexum(), "", leftHandSide.getLexum() );
         }
         else
@@ -2440,7 +2461,7 @@ public class Main
 
             if (compareType(leftHandSide, rightHandSide))
             {
-                System.out.print("\n Good multiplication or division. \n");
+               // System.out.print("\n Good multiplication or division. \n");
                 //intermediate code generation will go here
             }
             else
